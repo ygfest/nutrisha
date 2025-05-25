@@ -1,10 +1,16 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import AIChatbot from "@/components/ai-chatbot"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import AIChatbot from "@/components/ai-chatbot";
 import {
   Apple,
   Heart,
@@ -22,56 +28,78 @@ import {
   MapPin,
   ArrowRight,
   Sparkles,
-} from "lucide-react"
-import { useState } from "react"
+} from "lucide-react";
+import { useState } from "react";
 
 export default function HomePage() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const services = [
     {
       icon: Apple,
       title: "Personalized Meal Plans",
-      description: "Custom nutrition plans tailored to your specific health goals, dietary preferences, and lifestyle.",
+      description:
+        "Custom nutrition plans tailored to your specific health goals, dietary preferences, and lifestyle.",
       features: ["Custom macros", "Grocery lists", "Recipe suggestions"],
     },
     {
       icon: Heart,
       title: "Health Consultations",
-      description: "One-on-one consultations to address your unique nutritional needs and health concerns.",
+      description:
+        "One-on-one consultations to address your unique nutritional needs and health concerns.",
       features: ["60-min sessions", "Health assessments", "Follow-up support"],
     },
     {
       icon: Users,
       title: "Group Workshops",
-      description: "Interactive workshops covering various nutrition topics for groups and organizations.",
-      features: ["Team sessions", "Corporate wellness", "Educational materials"],
+      description:
+        "Interactive workshops covering various nutrition topics for groups and organizations.",
+      features: [
+        "Team sessions",
+        "Corporate wellness",
+        "Educational materials",
+      ],
     },
     {
       icon: BookOpen,
       title: "Nutrition Education",
-      description: "Comprehensive educational resources to help you make informed dietary choices.",
+      description:
+        "Comprehensive educational resources to help you make informed dietary choices.",
       features: ["Evidence-based", "Easy to understand", "Practical tips"],
     },
     {
       icon: Calendar,
       title: "Ongoing Support",
-      description: "Continuous guidance and support throughout your wellness journey.",
+      description:
+        "Continuous guidance and support throughout your wellness journey.",
       features: ["Weekly check-ins", "Progress tracking", "Adjustments"],
     },
     {
       icon: Target,
       title: "Goal Achievement",
-      description: "Strategic planning and monitoring to help you reach your health and fitness goals.",
+      description:
+        "Strategic planning and monitoring to help you reach your health and fitness goals.",
       features: ["SMART goals", "Progress metrics", "Accountability"],
     },
-  ]
+  ];
 
   const achievements = [
-    { icon: Award, text: "Certified Nutritionist & Dietitian", detail: "Board Certified Professional" },
-    { icon: Star, text: "500+ Successful Client Transformations", detail: "Proven Track Record" },
-    { icon: CheckCircle, text: "10+ Years of Experience", detail: "Extensive Expertise" },
-  ]
+    {
+      icon: Award,
+      text: "Certified Nutritionist & Dietitian",
+      detail: "Board Certified Professional",
+    },
+    {
+      icon: Star,
+      text: "500+ Successful Client Transformations",
+      detail: "Proven Track Record",
+    },
+    {
+      icon: CheckCircle,
+      text: "10+ Years of Experience",
+      detail: "Extensive Expertise",
+    },
+  ];
 
   const testimonials = [
     {
@@ -95,7 +123,7 @@ export default function HomePage() {
         "Finally, a nutrition plan that works with my hectic lifestyle. Krisha made healthy eating simple and sustainable.",
       rating: 5,
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-sage-50/30 to-sage-100/20">
@@ -112,7 +140,9 @@ export default function HomePage() {
                 <span className="text-2xl font-bold bg-gradient-to-r from-sage-700 to-sage-500 bg-clip-text text-transparent">
                   MissNutrition.Krisha
                 </span>
-                <p className="text-xs text-sage-600 font-medium">Professional Nutrition & Wellness</p>
+                <p className="text-xs text-sage-600 font-medium">
+                  Professional Nutrition & Wellness
+                </p>
               </div>
             </div>
 
@@ -159,7 +189,11 @@ export default function HomePage() {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle mobile menu"
             >
-              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {isMobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </Button>
           </div>
 
@@ -167,16 +201,28 @@ export default function HomePage() {
           {isMobileMenuOpen && (
             <div className="md:hidden py-6 border-t border-sage-100 animate-slide-up bg-white/95 backdrop-blur-md">
               <nav className="flex flex-col space-y-4">
-                <a href="#home" className="text-gray-700 hover:text-sage-600 transition-colors font-medium py-2">
+                <a
+                  href="#home"
+                  className="text-gray-700 hover:text-sage-600 transition-colors font-medium py-2"
+                >
                   Home
                 </a>
-                <a href="#services" className="text-gray-700 hover:text-sage-600 transition-colors font-medium py-2">
+                <a
+                  href="#services"
+                  className="text-gray-700 hover:text-sage-600 transition-colors font-medium py-2"
+                >
                   Services
                 </a>
-                <a href="#about" className="text-gray-700 hover:text-sage-600 transition-colors font-medium py-2">
+                <a
+                  href="#about"
+                  className="text-gray-700 hover:text-sage-600 transition-colors font-medium py-2"
+                >
                   About
                 </a>
-                <a href="#contact" className="text-gray-700 hover:text-sage-600 transition-colors font-medium py-2">
+                <a
+                  href="#contact"
+                  className="text-gray-700 hover:text-sage-600 transition-colors font-medium py-2"
+                >
                   Contact
                 </a>
                 <Button className="bg-gradient-to-r from-sage-500 to-sage-600 hover:from-sage-600 hover:to-sage-700 text-white w-full">
@@ -210,8 +256,9 @@ export default function HomePage() {
               </h1>
 
               <p className="text-xl sm:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-                Expert guidance, customized meal plans, and ongoing support to help you achieve your wellness goals and
-                maintain a healthy lifestyle for life.
+                Expert guidance, customized meal plans, and ongoing support to
+                help you achieve your wellness goals and maintain a healthy
+                lifestyle for life.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
@@ -239,7 +286,9 @@ export default function HomePage() {
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-sage-600">10+</div>
-                  <div className="text-gray-600 font-medium">Years Experience</div>
+                  <div className="text-gray-600 font-medium">
+                    Years Experience
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-sage-600">95%</div>
@@ -254,10 +303,15 @@ export default function HomePage() {
         <section id="services" className="py-24 bg-white relative">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-20">
-              <Badge className="mb-6 bg-sage-100 text-sage-800 px-4 py-2">Our Services</Badge>
-              <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">Comprehensive Nutrition Services</h2>
+              <Badge className="mb-6 bg-sage-100 text-sage-800 px-4 py-2">
+                Our Services
+              </Badge>
+              <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+                Comprehensive Nutrition Services
+              </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                Tailored solutions designed to meet your unique health and wellness needs with evidence-based approaches
+                Tailored solutions designed to meet your unique health and
+                wellness needs with evidence-based approaches
               </p>
             </div>
 
@@ -281,7 +335,10 @@ export default function HomePage() {
                   <CardContent>
                     <ul className="space-y-2">
                       {service.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-center text-sm text-gray-600">
+                        <li
+                          key={idx}
+                          className="flex items-center text-sm text-gray-600"
+                        >
                           <CheckCircle className="h-4 w-4 text-sage-500 mr-2 flex-shrink-0" />
                           {feature}
                         </li>
@@ -295,23 +352,32 @@ export default function HomePage() {
         </section>
 
         {/* Enhanced About Section */}
-        <section id="about" className="py-24 bg-gradient-to-br from-sage-50/50 to-white relative overflow-hidden">
+        <section
+          id="about"
+          className="py-24 bg-gradient-to-br from-sage-50/50 to-white relative overflow-hidden"
+        >
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-sage-50/30 to-transparent" />
 
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div className="max-w-6xl mx-auto">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                 <div className="text-center lg:text-left">
-                  <Badge className="mb-6 bg-sage-100 text-sage-800 px-4 py-2">About Krisha</Badge>
-                  <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-8">Meet Your Nutrition Expert</h2>
+                  <Badge className="mb-6 bg-sage-100 text-sage-800 px-4 py-2">
+                    About Krisha
+                  </Badge>
+                  <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-8">
+                    Meet Your Nutrition Expert
+                  </h2>
                   <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                    With over a decade of experience in nutrition and dietetics, I'm passionate about helping
-                    individuals achieve their health goals through evidence-based nutrition strategies and personalized
-                    care that fits your lifestyle.
+                    With over a decade of experience in nutrition and dietetics,
+                    I'm passionate about helping individuals achieve their
+                    health goals through evidence-based nutrition strategies and
+                    personalized care that fits your lifestyle.
                   </p>
                   <p className="text-lg text-gray-600 mb-10 leading-relaxed">
-                    My approach combines cutting-edge nutritional science with practical, sustainable solutions that
-                    deliver real, lasting results for my clients.
+                    My approach combines cutting-edge nutritional science with
+                    practical, sustainable solutions that deliver real, lasting
+                    results for my clients.
                   </p>
 
                   <div className="space-y-6 mb-10">
@@ -326,8 +392,12 @@ export default function HomePage() {
                           </div>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1">{achievement.text}</h4>
-                          <p className="text-sm text-gray-600">{achievement.detail}</p>
+                          <h4 className="font-semibold text-gray-900 mb-1">
+                            {achievement.text}
+                          </h4>
+                          <p className="text-sm text-gray-600">
+                            {achievement.detail}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -369,8 +439,12 @@ export default function HomePage() {
         <section className="py-24 bg-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-20">
-              <Badge className="mb-6 bg-sage-100 text-sage-800 px-4 py-2">Testimonials</Badge>
-              <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">What Our Clients Say</h2>
+              <Badge className="mb-6 bg-sage-100 text-sage-800 px-4 py-2">
+                Testimonials
+              </Badge>
+              <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+                What Our Clients Say
+              </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                 Real stories from real people who transformed their lives
               </p>
@@ -378,17 +452,29 @@ export default function HomePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {testimonials.map((testimonial, index) => (
-                <Card key={index} className="border-sage-100 hover:shadow-lg transition-all duration-300">
+                <Card
+                  key={index}
+                  className="border-sage-100 hover:shadow-lg transition-all duration-300"
+                >
                   <CardContent className="p-8">
                     <div className="flex mb-4">
                       {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                        <Star
+                          key={i}
+                          className="h-5 w-5 text-yellow-400 fill-current"
+                        />
                       ))}
                     </div>
-                    <p className="text-gray-600 mb-6 leading-relaxed italic">"{testimonial.content}"</p>
+                    <p className="text-gray-600 mb-6 leading-relaxed italic">
+                      "{testimonial.content}"
+                    </p>
                     <div>
-                      <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
-                      <p className="text-sm text-sage-600">{testimonial.role}</p>
+                      <h4 className="font-semibold text-gray-900">
+                        {testimonial.name}
+                      </h4>
+                      <p className="text-sm text-sage-600">
+                        {testimonial.role}
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
@@ -398,18 +484,24 @@ export default function HomePage() {
         </section>
 
         {/* Enhanced Contact/CTA Section */}
-        <section id="contact" className="py-24 bg-gradient-to-br from-sage-50 to-white relative overflow-hidden">
+        <section
+          id="contact"
+          className="py-24 bg-gradient-to-br from-sage-50 to-white relative overflow-hidden"
+        >
           <div className="absolute inset-0 bg-gradient-to-br from-sage-100/20 to-transparent" />
 
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div className="max-w-4xl mx-auto text-center">
-              <Badge className="mb-8 bg-sage-100 text-sage-800 px-4 py-2">Get Started</Badge>
+              <Badge className="mb-8 bg-sage-100 text-sage-800 px-4 py-2">
+                Get Started
+              </Badge>
               <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-8">
                 Ready to Start Your Wellness Journey?
               </h2>
               <p className="text-xl text-gray-600 mb-12 leading-relaxed">
-                Take the first step towards a healthier, happier you. Book your personalized consultation today and
-                discover how proper nutrition can transform your life.
+                Take the first step towards a healthier, happier you. Book your
+                personalized consultation today and discover how proper
+                nutrition can transform your life.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
@@ -462,25 +554,41 @@ export default function HomePage() {
               </div>
               <div>
                 <span className="text-2xl font-bold">MissNutrition.Krisha</span>
-                <p className="text-sm text-gray-400">Professional Nutrition & Wellness</p>
+                <p className="text-sm text-gray-400">
+                  Professional Nutrition & Wellness
+                </p>
               </div>
             </div>
             <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-              Empowering healthier lives through personalized nutrition, evidence-based guidance, and compassionate
-              care.
+              Empowering healthier lives through personalized nutrition,
+              evidence-based guidance, and compassionate care.
             </p>
             <div className="flex justify-center space-x-6 mb-8">
-              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-gray-400 hover:text-white"
+              >
                 Privacy Policy
               </Button>
-              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-gray-400 hover:text-white"
+              >
                 Terms of Service
               </Button>
-              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-gray-400 hover:text-white"
+              >
                 Contact
               </Button>
             </div>
-            <p className="text-gray-500 text-sm">© 2024 MissNutrition.Krisha. All rights reserved.</p>
+            <p className="text-gray-500 text-sm">
+              © 2025 MissNutrition.Krisha. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>
@@ -488,5 +596,5 @@ export default function HomePage() {
       {/* AI Chatbot Widget - Now standalone with floating avatar */}
       <AIChatbot />
     </div>
-  )
+  );
 }
