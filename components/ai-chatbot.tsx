@@ -3,7 +3,7 @@
 import type React from "react";
 import Image from "next/image";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -30,6 +30,14 @@ export default function AIChatbot() {
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(true);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when messages change or typing starts
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, isTyping]);
 
   const quickActions = [
     "Ask a Nutrition Question",
@@ -265,6 +273,9 @@ export default function AIChatbot() {
                   ))}
                 </div>
               )}
+
+              {/* Auto-scroll target */}
+              <div ref={messagesEndRef} />
             </div>
           </ScrollArea>
 
