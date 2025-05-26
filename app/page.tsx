@@ -138,7 +138,7 @@ export default function HomePage() {
               </div>
               <div>
                 <span className="text-2xl font-bold bg-gradient-to-r from-sage-700 to-sage-500 bg-clip-text text-transparent">
-                  MissNutrition.Krisha
+                  MissNutritionist.Krisha
                 </span>
                 <p className="text-xs text-sage-600 font-medium">
                   Professional Nutrition & Wellness
