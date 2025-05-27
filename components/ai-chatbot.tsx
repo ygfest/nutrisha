@@ -23,7 +23,7 @@ export default function AIChatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      text: "Hello! I'm Krisha, your AI nutrition assistant. How can I help you with your health and wellness goals today?",
+      text: "Hello! I'm Krisha, your nutritionist. How can I help you with your health and wellness goals today?",
       isUser: false,
       timestamp: new Date(),
     },
@@ -41,6 +41,7 @@ export default function AIChatbot() {
 
   const quickActions = [
     "Ask a Nutrition Question",
+    "Track calories with AI Vision",
     "Getting Started with Meal Planning",
     "Book a Consultation",
     "Healthy Recipe Ideas",
@@ -106,7 +107,22 @@ export default function AIChatbot() {
     setInputValue("");
     setIsTyping(true);
 
-    // Simulate AI response
+    // Special response for "labyu"
+    if (inputValue.toLowerCase().trim() === "labyu") {
+      setTimeout(() => {
+        setIsTyping(false);
+        const aiResponse: Message = {
+          id: (Date.now() + 1).toString(),
+          text: "👍",
+          isUser: false,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, aiResponse]);
+      }, 500);
+      return;
+    }
+
+    // Regular response for other messages
     setTimeout(() => {
       setIsTyping(false);
       const aiResponse: Message = {
@@ -175,7 +191,7 @@ export default function AIChatbot() {
       <CardHeader className="bg-gradient-to-r from-sage-400 to-sage-600 text-white p-0 rounded-t-lg relative overflow-hidden">
         <div className="flex items-start justify-end p-4 relative z-10">
           <div className="flex flex-col items-start mr-20">
-            <h3 className="font-semibold text-sm">Krisha AI</h3>
+            <h3 className="font-semibold text-sm">Krisha</h3>
             <p className="text-xs opacity-90">Nutrition Assistant</p>
           </div>
           <div className="flex space-x-1">
@@ -258,9 +274,6 @@ export default function AIChatbot() {
               {/* Quick Actions */}
               {showQuickActions && !isTyping && (
                 <div className="space-y-3 mt-6 animate-fade-in">
-                  <p className="text-sm font-medium text-gray-600 px-2">
-                    Quick Actions:
-                  </p>
                   {quickActions.map((action, index) => (
                     <Button
                       key={index}

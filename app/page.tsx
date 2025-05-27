@@ -49,6 +49,15 @@ export default function HomePage() {
         "One-on-one consultations to address your unique nutritional needs and health concerns.",
       features: ["60-min sessions", "Health assessments", "Follow-up support"],
     },
+
+    {
+      icon: BookOpen,
+      title: "Nutrition Education",
+      description:
+        "Comprehensive educational resources to help you make informed dietary choices.",
+      features: ["Evidence-based", "Easy to understand", "Practical tips"],
+    },
+
     {
       icon: Users,
       title: "Group Workshops",
@@ -59,13 +68,6 @@ export default function HomePage() {
         "Corporate wellness",
         "Educational materials",
       ],
-    },
-    {
-      icon: BookOpen,
-      title: "Nutrition Education",
-      description:
-        "Comprehensive educational resources to help you make informed dietary choices.",
-      features: ["Evidence-based", "Easy to understand", "Practical tips"],
     },
     {
       icon: Calendar,
@@ -304,7 +306,7 @@ export default function HomePage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-20">
               <Badge className="mb-6 bg-sage-100 text-sage-800 px-4 py-2">
-                Our Services
+                Services
               </Badge>
               <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
                 Comprehensive Nutrition Services
