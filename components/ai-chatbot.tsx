@@ -1,14 +1,14 @@
 "use client";
 
 import type React from "react";
-import Image from "next/image";
 
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, X, Minimize2, Maximize2, MessageCircle } from "lucide-react";
+import { Send, X, Minimize2, Maximize2 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   id: string;
@@ -40,8 +40,8 @@ export default function AIChatbot() {
   }, [messages, isTyping]);
 
   const quickActions = [
-    "Ask a Nutrition Question",
-    "Track calories with AI Vision",
+    "Ask a Question",
+    "Track calories with just a photo",
     "Getting Started with Meal Planning",
     "Book a Consultation",
     "Healthy Recipe Ideas",
@@ -49,7 +49,7 @@ export default function AIChatbot() {
     "Contact Support",
   ];
 
-  const handleQuickAction = (action: string) => {
+  const handleQuickAction = async (action: string) => {
     const userMessage: Message = {
       id: Date.now().toString(),
       text: action,
@@ -61,39 +61,44 @@ export default function AIChatbot() {
     setShowQuickActions(false);
     setIsTyping(true);
 
-    // Simulate AI response based on action
-    setTimeout(() => {
-      let responseText =
-        "Thank you for your question! I'd be happy to help you with personalized nutrition advice.";
+    try {
+      const response = await fetch("/api/generate-message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: action }),
+      });
 
-      if (action.includes("Book")) {
-        responseText =
-          "I'd love to help you book a consultation! Please visit our booking page or call us directly to schedule your personalized nutrition session with me.";
-      } else if (action.includes("Recipe")) {
-        responseText =
-          "Here are some healthy recipe ideas! I can suggest recipes based on your dietary preferences and health goals. What type of cuisine do you prefer?";
-      } else if (action.includes("Weight")) {
-        responseText =
-          "Weight management is a journey! I can help you create a sustainable plan. What are your current goals - weight loss, maintenance, or healthy weight gain?";
-      } else if (action.includes("Getting Started")) {
-        responseText =
-          "Great choice! Meal planning is key to success. I'll help you create a personalized plan that fits your lifestyle and nutritional needs.";
+      if (!response.ok) {
+        throw new Error("Failed to get AI response");
       }
+
+      const data = await response.json();
 
       setIsTyping(false);
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: responseText,
+        text: data.response,
         isUser: false,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, aiResponse]);
-    }, 1500);
+    } catch (error) {
+      setIsTyping(false);
+      const errorResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "I'm sorry, I'm having trouble responding right now. Please try again later.",
+        isUser: false,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, errorResponse]);
+    }
   };
 
   const [inputValue, setInputValue] = useState("");
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
     const userMessage: Message = {
@@ -103,12 +108,13 @@ export default function AIChatbot() {
       timestamp: new Date(),
     };
 
+    const messageText = inputValue;
     setMessages((prev) => [...prev, userMessage]);
     setInputValue("");
     setIsTyping(true);
 
     // Special response for "labyu"
-    if (inputValue.toLowerCase().trim() === "labyu") {
+    if (messageText.toLowerCase().trim() === "labyu") {
       setTimeout(() => {
         setIsTyping(false);
         const aiResponse: Message = {
@@ -122,17 +128,39 @@ export default function AIChatbot() {
       return;
     }
 
-    // Regular response for other messages
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/generate-message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: messageText }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to get AI response");
+      }
+
+      const data = await response.json();
+
       setIsTyping(false);
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: "Thank you for your question! I'd be happy to help you with personalized nutrition advice. For detailed consultations, please book a session with me.",
+        text: data.response,
         isUser: false,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, aiResponse]);
-    }, 1500);
+    } catch (error) {
+      setIsTyping(false);
+      const errorResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "I'm sorry, I'm having trouble responding right now. Please try again later.",
+        isUser: false,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, errorResponse]);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -247,7 +275,13 @@ export default function AIChatbot() {
                         : "bg-white text-gray-800 border border-gray-100 mr-4"
                     }`}
                   >
-                    {message.text}
+                    {message.isUser ? (
+                      message.text
+                    ) : (
+                      <div className="[&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&>h1]:text-lg [&>h1]:font-bold [&>h1]:mb-2 [&>h2]:text-base [&>h2]:font-semibold [&>h2]:mb-2 [&>h3]:text-sm [&>h3]:font-medium [&>h3]:mb-1 [&>p]:mb-2 [&>ul]:mb-2 [&>ol]:mb-2 [&>li]:ml-4 [&>strong]:font-semibold [&>em]:italic [&>code]:bg-gray-100 [&>code]:px-1 [&>code]:py-0.5 [&>code]:rounded [&>code]:text-xs [&>blockquote]:border-l-4 [&>blockquote]:border-sage-300 [&>blockquote]:pl-3 [&>blockquote]:italic [&>blockquote]:text-gray-600">
+                        <ReactMarkdown>{message.text}</ReactMarkdown>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -271,8 +305,8 @@ export default function AIChatbot() {
                 </div>
               )}
 
-              {/* Quick Actions */}
-              {showQuickActions && !isTyping && (
+              {/* Quick Actions - Only show when there's just the initial greeting */}
+              {showQuickActions && !isTyping && messages.length === 1 && (
                 <div className="space-y-3 mt-6 animate-fade-in">
                   {quickActions.map((action, index) => (
                     <Button
