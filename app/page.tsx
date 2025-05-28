@@ -30,6 +30,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function HomePage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -566,27 +567,27 @@ export default function HomePage() {
               evidence-based guidance, and compassionate care.
             </p>
             <div className="flex justify-center space-x-6 mb-8">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-gray-400 hover:text-white"
+              <Link
+                href="/privacy-policy"
+                className="relative group text-gray-400 hover:text-white"
               >
                 Privacy Policy
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-gray-400 hover:text-white"
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-200 group-hover:w-full"></span>
+              </Link>
+              <Link
+                href="/terms-of-service"
+                className="relative group text-gray-400 hover:text-white"
               >
                 Terms of Service
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-gray-400 hover:text-white"
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-200 group-hover:w-full"></span>
+              </Link>
+              <Link
+                href="/contact"
+                className="relative group text-gray-400 hover:text-white"
               >
                 Contact
-              </Button>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-200 group-hover:w-full"></span>
+              </Link>
             </div>
             <p className="text-gray-500 text-sm">
               © 2025 MissNutrition.Krisha. All rights reserved.
