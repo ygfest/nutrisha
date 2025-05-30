@@ -31,9 +31,11 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter();
 
   const services = [
     {
@@ -179,7 +181,10 @@ export default function HomePage() {
                 Contact
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-sage-500 transition-all duration-200 group-hover:w-full"></span>
               </a>
-              <Button className="bg-gradient-to-r from-sage-500 to-sage-600 hover:from-sage-600 hover:to-sage-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
+              <Button
+                className="bg-gradient-to-r from-sage-500 to-sage-600 hover:from-sage-600 hover:to-sage-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+                onClick={() => router.push("/book-appointment")}
+              >
                 Book Consultation
               </Button>
             </nav>
@@ -291,7 +296,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-sage-600">2025</div>
+                  <div className="text-3xl font-bold text-sage-600">2024</div>
                   <div className="text-gray-600 font-medium">Licensed RND</div>
                 </div>
                 <div className="text-center">
