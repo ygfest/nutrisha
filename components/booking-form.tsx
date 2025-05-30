@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -81,16 +81,6 @@ export function BookingForm({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit({
-      ...formData,
-      appointmentType,
-      selectedDate,
-      selectedTime,
-    });
-  };
-
   const isFormValid = () => {
     return (
       formData.firstName &&
@@ -102,6 +92,53 @@ export function BookingForm({
       formData.agreeToTerms &&
       formData.agreeToPrivacy
     );
+  };
+
+  const scrollToFirstError = () => {
+    const requiredFields = [
+      "firstName",
+      "lastName",
+      "email",
+      "phone",
+      "healthGoals",
+      "paymentMethod",
+      "terms",
+      "privacy",
+    ];
+
+    for (const field of requiredFields) {
+      const element = document.getElementById(field);
+      if (element) {
+        const fieldValue =
+          field === "terms"
+            ? formData.agreeToTerms
+            : field === "privacy"
+            ? formData.agreeToPrivacy
+            : formData[field as keyof typeof formData];
+
+        if (!fieldValue) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.focus();
+          break;
+        }
+      }
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!isFormValid()) {
+      scrollToFirstError();
+      return;
+    }
+
+    onSubmit({
+      ...formData,
+      appointmentType,
+      selectedDate,
+      selectedTime,
+    });
   };
 
   return (
