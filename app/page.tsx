@@ -89,41 +89,41 @@ export default function HomePage() {
   const achievements = [
     {
       icon: Award,
-      text: "Certified Nutritionist & Dietitian",
-      detail: "Board Certified Professional",
+      text: "Registered Nutritionist-Dietitian (2025)",
+      detail: "Licensed by Professional Regulation Commission",
     },
     {
       icon: Star,
-      text: "500+ Successful Client Transformations",
-      detail: "Proven Track Record",
+      text: "Bachelor of Science in Nutrition and Dietetics",
+      detail: "University of Santo Tomas Graduate",
     },
     {
       icon: CheckCircle,
-      text: "10+ Years of Experience",
-      detail: "Extensive Expertise",
+      text: "Therapeutic Dietitian",
+      detail: "St. Luke's Medical Center",
     },
   ];
 
   const testimonials = [
     {
-      name: "Sarah Johnson",
-      role: "Working Professional",
+      name: "Clinical Supervisor",
+      role: "St. Luke's Medical Center",
       content:
-        "Krisha transformed my relationship with food. Her personalized approach helped me lose 30 pounds and gain energy I never knew I had.",
+        "Krisha demonstrates exceptional dedication and applies evidence-based approaches effectively. Her fresh perspective and enthusiasm make her a valuable addition to our nutrition team.",
       rating: 5,
     },
     {
-      name: "Michael Chen",
-      role: "Athlete",
+      name: "Internship Preceptor",
+      role: "University of Santo Tomas Hospital",
       content:
-        "The meal plans were perfectly tailored to my training schedule. My performance improved dramatically within weeks.",
+        "During her clinical internship, Krisha showed strong analytical skills and genuine care for patients. Her academic foundation is solid and she's eager to learn.",
       rating: 5,
     },
     {
-      name: "Emily Rodriguez",
-      role: "Busy Mom",
+      name: "Academic Mentor",
+      role: "University of Santo Tomas",
       content:
-        "Finally, a nutrition plan that works with my hectic lifestyle. Krisha made healthy eating simple and sustainable.",
+        "Krisha was an outstanding student who consistently demonstrated passion for nutrition science and commitment to evidence-based practice. Very promising career ahead.",
       rating: 5,
     },
   ];
@@ -141,10 +141,10 @@ export default function HomePage() {
               </div>
               <div>
                 <span className="text-2xl font-bold bg-gradient-to-r from-sage-700 to-sage-500 bg-clip-text text-transparent">
-                  MissNutritionist.Krisha
+                  Krisha Nobora, RND
                 </span>
                 <p className="text-xs text-sage-600 font-medium">
-                  Professional Nutrition & Wellness
+                  Registered Nutritionist-Dietitian
                 </p>
               </div>
             </div>
@@ -247,21 +247,22 @@ export default function HomePage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div className="max-w-5xl mx-auto text-center animate-fade-in">
               <Badge className="mb-8 bg-gradient-to-r from-sage-100 to-sage-200 text-sage-800 hover:from-sage-200 hover:to-sage-300 border-sage-300 px-6 py-2 text-sm font-medium">
-                <Sparkles className="h-4 w-4 mr-2" />
+                {/* <Sparkles className="h-4 w-4 mr-2" /> */}
                 Professional Nutritionist & Dietitian
               </Badge>
 
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-8 leading-tight">
                 Transform Your Health with
                 <span className="block bg-gradient-to-r from-sage-600 via-sage-500 to-sage-700 bg-clip-text text-transparent">
-                  Personalized Nutrition
+                  Evidence-Based Nutrition
                 </span>
               </h1>
 
               <p className="text-xl sm:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-                Expert guidance, customized meal plans, and ongoing support to
-                help you achieve your wellness goals and maintain a healthy
-                lifestyle for life.
+                Fresh perspective from a newly licensed Registered
+                Nutritionist-Dietitian, combining cutting-edge nutritional
+                science with personalized care to help you achieve your wellness
+                goals.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
@@ -284,18 +285,20 @@ export default function HomePage() {
               {/* Stats */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 max-w-3xl mx-auto">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-sage-600">500+</div>
-                  <div className="text-gray-600 font-medium">Happy Clients</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-sage-600">10+</div>
+                  <div className="text-3xl font-bold text-sage-600">Fresh</div>
                   <div className="text-gray-600 font-medium">
-                    Years Experience
+                    Graduate Perspective
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-sage-600">95%</div>
-                  <div className="text-gray-600 font-medium">Success Rate</div>
+                  <div className="text-3xl font-bold text-sage-600">2025</div>
+                  <div className="text-gray-600 font-medium">Licensed RND</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-sage-600">100%</div>
+                  <div className="text-gray-600 font-medium">
+                    Evidence-Based
+                  </div>
                 </div>
               </div>
             </div>
@@ -372,15 +375,19 @@ export default function HomePage() {
                     Meet Your Nutrition Expert
                   </h2>
                   <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                    With over a decade of experience in nutrition and dietetics,
-                    I'm passionate about helping individuals achieve their
-                    health goals through evidence-based nutrition strategies and
-                    personalized care that fits your lifestyle.
+                    As a newly licensed Registered Nutritionist-Dietitian from
+                    the University of Santo Tomas, I bring fresh enthusiasm and
+                    the latest evidence-based approaches to nutrition and
+                    wellness. Currently working as a Therapeutic Dietitian at
+                    St. Luke's Medical Center, I'm passionate about helping
+                    individuals achieve their health goals through personalized,
+                    science-backed nutrition strategies.
                   </p>
                   <p className="text-lg text-gray-600 mb-10 leading-relaxed">
-                    My approach combines cutting-edge nutritional science with
-                    practical, sustainable solutions that deliver real, lasting
-                    results for my clients.
+                    My educational background and clinical training have
+                    equipped me with a solid foundation in nutrition science,
+                    and I'm committed to continuous learning to provide the most
+                    current and effective nutrition guidance to my clients.
                   </p>
 
                   <div className="space-y-6 mb-10">
@@ -502,9 +509,10 @@ export default function HomePage() {
                 Ready to Start Your Wellness Journey?
               </h2>
               <p className="text-xl text-gray-600 mb-12 leading-relaxed">
-                Take the first step towards a healthier, happier you. Book your
-                personalized consultation today and discover how proper
-                nutrition can transform your life.
+                Take the first step towards a healthier, happier you. Connect
+                with a fresh, evidence-based approach to nutrition. Let's work
+                together to achieve your wellness goals with personalized,
+                science-backed strategies.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
@@ -529,17 +537,19 @@ export default function HomePage() {
                 <div className="flex flex-col items-center p-6 bg-white rounded-2xl shadow-sm border border-sage-100">
                   <Phone className="h-8 w-8 text-sage-500 mb-4" />
                   <h3 className="font-semibold text-gray-900 mb-2">Phone</h3>
-                  <p className="text-gray-600">+1 (555) 123-4567</p>
+                  <p className="text-gray-600">Available upon booking</p>
                 </div>
                 <div className="flex flex-col items-center p-6 bg-white rounded-2xl shadow-sm border border-sage-100">
                   <Mail className="h-8 w-8 text-sage-500 mb-4" />
                   <h3 className="font-semibold text-gray-900 mb-2">Email</h3>
-                  <p className="text-gray-600">hello@missnutrition.krisha</p>
+                  <p className="text-gray-600">krisha.nobora@nutrition.ph</p>
                 </div>
                 <div className="flex flex-col items-center p-6 bg-white rounded-2xl shadow-sm border border-sage-100">
                   <MapPin className="h-8 w-8 text-sage-500 mb-4" />
                   <h3 className="font-semibold text-gray-900 mb-2">Location</h3>
-                  <p className="text-gray-600">Virtual & In-Person</p>
+                  <p className="text-gray-600">
+                    Taguig, Metro Manila, Philippines
+                  </p>
                 </div>
               </div>
             </div>
@@ -556,15 +566,15 @@ export default function HomePage() {
                 <Apple className="h-7 w-7 text-white" />
               </div>
               <div>
-                <span className="text-2xl font-bold">MissNutrition.Krisha</span>
+                <span className="text-2xl font-bold">Krisha Nobora, RND</span>
                 <p className="text-sm text-gray-400">
-                  Professional Nutrition & Wellness
+                  Registered Nutritionist-Dietitian
                 </p>
               </div>
             </div>
             <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-              Empowering healthier lives through personalized nutrition,
-              evidence-based guidance, and compassionate care.
+              Empowering healthier lives through evidence-based nutrition,
+              personalized guidance, and compassionate care.
             </p>
             <div className="flex justify-center space-x-6 mb-8">
               <Link
@@ -590,7 +600,7 @@ export default function HomePage() {
               </Link>
             </div>
             <p className="text-gray-500 text-sm">
-              © 2025 MissNutrition.Krisha. All rights reserved.
+              © 2025 Krisha Nobora, RND. All rights reserved.
             </p>
           </div>
         </div>
