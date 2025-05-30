@@ -474,9 +474,9 @@ export function BookingForm({
               </Badge>
             </div>
             <div className="flex items-center space-x-2 p-3 border border-sage-200 rounded-lg">
-              <RadioGroupItem value="paypal" id="paypal" />
-              <Label htmlFor="paypal" className="flex-1">
-                PayPal
+              <RadioGroupItem value="gcash" id="gcash" />
+              <Label htmlFor="gcash" className="flex-1">
+                GCash
               </Label>
             </div>
             <div className="flex items-center space-x-2 p-3 border border-sage-200 rounded-lg">
