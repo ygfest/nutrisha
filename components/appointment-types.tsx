@@ -31,7 +31,7 @@ const appointmentTypes: AppointmentType[] = [
     id: "initial-consultation",
     title: "Initial Consultation",
     duration: "90 minutes",
-    price: "$150",
+    price: "₱2,500",
     description:
       "Comprehensive health assessment and personalized nutrition plan development",
     features: [
@@ -48,7 +48,7 @@ const appointmentTypes: AppointmentType[] = [
     id: "follow-up",
     title: "Follow-up Session",
     duration: "45 minutes",
-    price: "$75",
+    price: "₱1,500",
     description: "Progress review and plan adjustments for existing clients",
     features: [
       "Progress evaluation",
@@ -63,7 +63,7 @@ const appointmentTypes: AppointmentType[] = [
     id: "meal-planning",
     title: "Meal Planning Session",
     duration: "60 minutes",
-    price: "$100",
+    price: "₱2,000",
     description:
       "Detailed meal planning and recipe guidance for your lifestyle",
     features: [
@@ -79,7 +79,7 @@ const appointmentTypes: AppointmentType[] = [
     id: "group-session",
     title: "Group Workshop",
     duration: "120 minutes",
-    price: "$50",
+    price: "₱1,200",
     description:
       "Interactive nutrition education in a supportive group setting",
     features: [
@@ -95,7 +95,7 @@ const appointmentTypes: AppointmentType[] = [
     id: "sports-nutrition",
     title: "Sports Nutrition",
     duration: "75 minutes",
-    price: "$125",
+    price: "₱2,200",
     description:
       "Specialized nutrition planning for athletes and active individuals",
     features: [
@@ -111,7 +111,7 @@ const appointmentTypes: AppointmentType[] = [
     id: "educational-session",
     title: "Nutrition Education",
     duration: "60 minutes",
-    price: "$85",
+    price: "₱1,800",
     description:
       "Learn about specific nutrition topics and healthy eating principles",
     features: [

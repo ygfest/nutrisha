@@ -27,7 +27,7 @@ const stats = [
   },
   {
     title: "Revenue",
-    value: "$12,450",
+    value: "₱45,000",
     change: "+8%",
     changeType: "positive" as const,
     icon: DollarSign,

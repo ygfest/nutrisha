@@ -38,12 +38,12 @@ const appointmentTypeNames: Record<string, string> = {
 };
 
 const appointmentTypePrices: Record<string, string> = {
-  "initial-consultation": "$150",
-  "follow-up": "$75",
-  "meal-planning": "$100",
-  "group-session": "$50",
-  "sports-nutrition": "$125",
-  "educational-session": "$85",
+  "initial-consultation": "₱2,500",
+  "follow-up": "₱1,500",
+  "meal-planning": "₱2,000",
+  "group-session": "₱1,200",
+  "sports-nutrition": "₱2,200",
+  "educational-session": "₱1,800",
 };
 
 export function BookingForm({

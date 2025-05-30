@@ -66,7 +66,7 @@ export function AdminHeader() {
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium">Payment received</p>
                   <p className="text-xs text-muted-foreground">
-                    Michael Chen - $150
+                    Michael Chen - ₱2,500
                   </p>
                 </div>
               </DropdownMenuItem>
