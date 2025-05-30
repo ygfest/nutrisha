@@ -233,7 +233,10 @@ export default function HomePage() {
                 >
                   Contact
                 </a>
-                <Button className="bg-gradient-to-r from-sage-500 to-sage-600 hover:from-sage-600 hover:to-sage-700 text-white w-full">
+                <Button
+                  className="bg-gradient-to-r from-sage-500 to-sage-600 hover:from-sage-600 hover:to-sage-700 text-white w-full"
+                  onClick={() => router.push("/book-appointment")}
+                >
                   Book Consultation
                 </Button>
               </nav>
