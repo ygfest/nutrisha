@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
+import { Providers } from "@/components/providers";
 
 export const metadata: Metadata = {
-  title: "Miss Nutritionist Krisha",
-  description: "Miss Nutritionist Krisha",
+  title: "Krisha Nobora, RND - Nutrition Consultation",
+  description:
+    "Professional nutrition consultation and personalized meal planning",
 };
 
 export default function RootLayout({
@@ -13,7 +16,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Providers>
+          {children}
+          <Toaster />
+        </Providers>
+      </body>
     </html>
   );
 }

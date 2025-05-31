@@ -1,6 +1,7 @@
 "use client";
 
 import type * as React from "react";
+import { logout } from "@/lib/auth-actions";
 import {
   BarChart3,
   Calendar,
@@ -10,6 +11,7 @@ import {
   Settings,
   Apple,
   ChevronDown,
+  LogOut,
 } from "lucide-react";
 
 import {
@@ -69,6 +71,14 @@ const navigationItems = [
 export function AdminSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -135,7 +145,11 @@ export function AdminSidebar({
                 <DropdownMenuItem>
                   <span>Settings</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="text-red-600"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
                   <span>Sign out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>

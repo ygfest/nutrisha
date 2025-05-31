@@ -20,16 +20,17 @@ interface Message {
 export default function AIChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [clientName, setClientName] = useState("Anonymous User");
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      text: "Hello! I'm Krisha, your nutritionist. How can I help you with your health and wellness goals today?",
+      text: "Hello! I'm Krisha, your nutritionist. What's your name? (This helps me personalize our conversation, but feel free to stay anonymous if you prefer!)",
       isUser: false,
       timestamp: new Date(),
     },
   ]);
   const [isTyping, setIsTyping] = useState(false);
-  const [showQuickActions, setShowQuickActions] = useState(true);
+  const [showQuickActions, setShowQuickActions] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when messages change or typing starts
@@ -49,6 +50,73 @@ export default function AIChatbot() {
     "Contact Support",
   ];
 
+  // Simple name detection for display purposes only
+  const detectNameForDisplay = (message: string): string | null => {
+    const msg = message.toLowerCase().trim();
+    const namePatterns = [
+      /^(?:my name is|i'm|i am|call me|it's|this is)\s+([a-zA-Z]+(?:\s+[a-zA-Z]+)?)/i,
+      /^([a-zA-Z]{2,}(?:\s+[a-zA-Z]+)?)$/i,
+      /^(?:hi|hello|hey),?\s*(?:my name is|i'm|i am)?\s*([a-zA-Z]+(?:\s+[a-zA-Z]+)?)/i,
+    ];
+
+    for (const pattern of namePatterns) {
+      const match = message.match(pattern);
+      if (match && match[1]) {
+        const potentialName = match[1].trim();
+        const nonNames = [
+          "anonymous",
+          "user",
+          "nothing",
+          "none",
+          "no",
+          "nope",
+          "skip",
+          "pass",
+        ];
+        if (
+          !nonNames.includes(potentialName.toLowerCase()) &&
+          potentialName.length >= 2
+        ) {
+          return (
+            potentialName.charAt(0).toUpperCase() +
+            potentialName.slice(1).toLowerCase()
+          );
+        }
+      }
+    }
+    return null;
+  };
+
+  const sendMessageToAPI = async (
+    messageText: string,
+    currentClientName: string = clientName,
+    isFirstMessage: boolean = false
+  ) => {
+    try {
+      const response = await fetch("/api/generate-message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: messageText,
+          clientName: currentClientName,
+          isFirstMessage: isFirstMessage,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to get AI response");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error sending message:", error);
+      throw error;
+    }
+  };
+
   const handleQuickAction = async (action: string) => {
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -62,24 +130,12 @@ export default function AIChatbot() {
     setIsTyping(true);
 
     try {
-      const response = await fetch("/api/generate-message", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message: action }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to get AI response");
-      }
-
-      const data = await response.json();
+      const apiResponse = await sendMessageToAPI(action);
 
       setIsTyping(false);
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.response,
+        text: apiResponse.response,
         isUser: false,
         timestamp: new Date(),
       };
@@ -113,6 +169,9 @@ export default function AIChatbot() {
     setInputValue("");
     setIsTyping(true);
 
+    // Check if this is the first user message
+    const isFirstUserMessage = messages.length === 1;
+
     // Special response for "labyu"
     if (messageText.toLowerCase().trim() === "labyu") {
       setTimeout(() => {
@@ -124,33 +183,39 @@ export default function AIChatbot() {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, aiResponse]);
+        if (isFirstUserMessage) {
+          setShowQuickActions(true);
+        }
       }, 500);
       return;
     }
 
     try {
-      const response = await fetch("/api/generate-message", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message: messageText }),
-      });
+      // Send message to API with name detection
+      const apiResponse = await sendMessageToAPI(
+        messageText,
+        clientName,
+        isFirstUserMessage
+      );
 
-      if (!response.ok) {
-        throw new Error("Failed to get AI response");
+      // Update client name if detected
+      if (apiResponse.detectedName && apiResponse.clientName !== clientName) {
+        setClientName(apiResponse.clientName);
       }
-
-      const data = await response.json();
 
       setIsTyping(false);
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.response,
+        text: apiResponse.response,
         isUser: false,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, aiResponse]);
+
+      // Show quick actions after the first exchange
+      if (isFirstUserMessage) {
+        setShowQuickActions(true);
+      }
     } catch (error) {
       setIsTyping(false);
       const errorResponse: Message = {
@@ -160,6 +225,10 @@ export default function AIChatbot() {
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorResponse]);
+
+      if (isFirstUserMessage) {
+        setShowQuickActions(true);
+      }
     }
   };
 
@@ -217,10 +286,13 @@ export default function AIChatbot() {
     >
       {/* Enhanced Header */}
       <CardHeader className="bg-gradient-to-r from-sage-400 to-sage-600 text-white p-0 rounded-t-lg relative overflow-hidden">
-        <div className="flex items-start justify-end p-4 relative z-10">
-          <div className="flex flex-col items-start mr-20">
+        <div className="flex items-start justify-between p-4 relative z-10">
+          <div className="flex flex-col items-start ml-12">
             <h3 className="font-semibold text-sm">Krisha</h3>
             <p className="text-xs opacity-90">Nutrition Assistant</p>
+            {clientName !== "Anonymous User" && (
+              <p className="text-xs opacity-75">Chatting with {clientName}</p>
+            )}
           </div>
           <div className="flex space-x-1">
             <Button
@@ -305,9 +377,12 @@ export default function AIChatbot() {
                 </div>
               )}
 
-              {/* Quick Actions - Only show when there's just the initial greeting */}
-              {showQuickActions && !isTyping && messages.length === 1 && (
+              {/* Quick Actions - Show after first exchange */}
+              {showQuickActions && !isTyping && (
                 <div className="space-y-3 mt-6 animate-fade-in">
+                  <p className="text-xs text-gray-500 text-center mb-4">
+                    Here are some things I can help you with:
+                  </p>
                   {quickActions.map((action, index) => (
                     <Button
                       key={index}
@@ -333,7 +408,11 @@ export default function AIChatbot() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ask about nutrition..."
+                placeholder={
+                  messages.length === 1
+                    ? "Type your name or ask a question..."
+                    : "Ask about nutrition..."
+                }
                 className="flex-1 text-sm border-sage-200 focus:border-sage-400 focus:ring-sage-400 rounded-xl px-4 py-3 bg-gray-50 focus:bg-white transition-all duration-200"
                 aria-label="Type your nutrition question"
               />
