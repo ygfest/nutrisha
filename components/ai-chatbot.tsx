@@ -19,6 +19,10 @@ import {
   ChefHat,
   Scale,
   HelpCircle,
+  Sparkles,
+  Info,
+  AlertCircle,
+  Shield,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
@@ -51,6 +55,7 @@ export default function AIChatbot() {
   const [isTyping, setIsTyping] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(false);
   const [hasShownQuickActions, setHasShownQuickActions] = useState(false);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when messages change or typing starts
@@ -58,7 +63,7 @@ export default function AIChatbot() {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages, isTyping]);
+  }, [messages, isTyping, showQuickActions]);
 
   // Show quick actions after a brief delay when conversation gets started
   useEffect(() => {
@@ -70,6 +75,25 @@ export default function AIChatbot() {
       return () => clearTimeout(timer);
     }
   }, [messages.length, hasShownQuickActions, isTyping]);
+
+  // Show disclaimer after 2nd AI response
+  useEffect(() => {
+    const aiMessages = messages.filter((msg) => !msg.isUser);
+    if (aiMessages.length >= 2 && !showDisclaimer) {
+      const timer = setTimeout(() => {
+        setShowDisclaimer(true);
+        // Auto-dismiss after 10 seconds to be less annoying
+        setTimeout(() => {
+          setShowDisclaimer(false);
+        }, 10000);
+      }, 2000); // Show after 2 seconds when there are 2+ AI responses
+      return () => clearTimeout(timer);
+    }
+  }, [messages, showDisclaimer]);
+
+  // Add pulse hint for sparkles button when user hasn't discovered it yet
+  const shouldShowPulseHint =
+    messages.length >= 2 && !hasShownQuickActions && !showQuickActions;
 
   const quickActions: QuickAction[] = [
     {
@@ -382,6 +406,40 @@ export default function AIChatbot() {
                 </div>
               )}
 
+              {/* Elegant AI Disclaimer - Less annoying version */}
+              {showDisclaimer && (
+                <div className="mt-3 animate-fade-in">
+                  <div className="mx-2 p-2.5 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-lg shadow-sm">
+                    <div className="flex items-start gap-2">
+                      <Info className="h-3.5 w-3.5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <p className="text-xs text-blue-800 leading-relaxed">
+                          AI can make mistakes. Consider{" "}
+                          <button
+                            onClick={() =>
+                              handleQuickAction("Book consultation")
+                            }
+                            className="text-blue-900 underline hover:text-blue-700 font-medium transition-colors"
+                          >
+                            consulting Krisha
+                          </button>{" "}
+                          for personalized advice.
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowDisclaimer(false)}
+                        className="h-4 w-4 p-0 text-blue-500 hover:text-blue-700 hover:bg-blue-100 rounded-full"
+                        aria-label="Dismiss disclaimer"
+                      >
+                        <X className="h-2.5 w-2.5" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Quick Actions - Modern pill-style horizontal layout */}
               {showQuickActions && !isTyping && (
                 <div className="mt-4 animate-fade-in">
@@ -441,10 +499,22 @@ export default function AIChatbot() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowQuickActions(!showQuickActions)}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-gray-400 hover:text-sage-600"
-                  aria-label="Toggle quick suggestions"
+                  className={`absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 transition-all duration-200 rounded-full ${
+                    showQuickActions
+                      ? "text-sage-600 bg-sage-50 hover:bg-sage-100"
+                      : "text-gray-400 hover:text-sage-600 hover:bg-gray-50"
+                  } ${shouldShowPulseHint ? "animate-pulse" : ""}`}
+                  aria-label={
+                    showQuickActions
+                      ? "Hide quick suggestions"
+                      : "Show quick suggestions"
+                  }
                 >
-                  <MessageCircle className="h-4 w-4" />
+                  <Sparkles
+                    className={`h-4 w-4 transition-transform duration-200 ${
+                      showQuickActions ? "scale-110" : ""
+                    }`}
+                  />
                 </Button>
               </div>
               <Button
