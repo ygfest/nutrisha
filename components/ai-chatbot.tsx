@@ -55,7 +55,8 @@ export default function AIChatbot() {
   const [isTyping, setIsTyping] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(false);
   const [hasShownQuickActions, setHasShownQuickActions] = useState(false);
-  const [showDisclaimer, setShowDisclaimer] = useState(false);
+  const [showDisclaimerToast, setShowDisclaimerToast] = useState(false);
+  const [hasShownDisclaimer, setHasShownDisclaimer] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when messages change or typing starts
@@ -76,20 +77,22 @@ export default function AIChatbot() {
     }
   }, [messages.length, hasShownQuickActions, isTyping]);
 
-  // Show disclaimer after 2nd AI response
+  // Show disclaimer toast once after first user interaction (2nd AI response)
   useEffect(() => {
     const aiMessages = messages.filter((msg) => !msg.isUser);
-    if (aiMessages.length >= 2 && !showDisclaimer) {
+    // Show after user has had their first conversation (initial greeting + 1 response = 2 AI messages)
+    if (aiMessages.length >= 2 && !hasShownDisclaimer) {
       const timer = setTimeout(() => {
-        setShowDisclaimer(true);
-        // Auto-dismiss after 10 seconds to be less annoying
+        setShowDisclaimerToast(true);
+        setHasShownDisclaimer(true);
+        // Auto-hide after 5 seconds
         setTimeout(() => {
-          setShowDisclaimer(false);
-        }, 10000);
-      }, 2000); // Show after 2 seconds when there are 2+ AI responses
+          setShowDisclaimerToast(false);
+        }, 5000);
+      }, 2000); // Show after 2 seconds delay
       return () => clearTimeout(timer);
     }
-  }, [messages, showDisclaimer]);
+  }, [messages, hasShownDisclaimer]);
 
   // Add pulse hint for sparkles button when user hasn't discovered it yet
   const shouldShowPulseHint =
@@ -406,40 +409,6 @@ export default function AIChatbot() {
                 </div>
               )}
 
-              {/* Elegant AI Disclaimer - Less annoying version */}
-              {showDisclaimer && (
-                <div className="mt-3 animate-fade-in">
-                  <div className="mx-2 p-2.5 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-lg shadow-sm">
-                    <div className="flex items-start gap-2">
-                      <Info className="h-3.5 w-3.5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <div className="flex-1">
-                        <p className="text-xs text-blue-800 leading-relaxed">
-                          AI can make mistakes. Consider{" "}
-                          <button
-                            onClick={() =>
-                              handleQuickAction("Book consultation")
-                            }
-                            className="text-blue-900 underline hover:text-blue-700 font-medium transition-colors"
-                          >
-                            consulting Krisha
-                          </button>{" "}
-                          for personalized advice.
-                        </p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowDisclaimer(false)}
-                        className="h-4 w-4 p-0 text-blue-500 hover:text-blue-700 hover:bg-blue-100 rounded-full"
-                        aria-label="Dismiss disclaimer"
-                      >
-                        <X className="h-2.5 w-2.5" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {/* Quick Actions - Modern pill-style horizontal layout */}
               {showQuickActions && !isTyping && (
                 <div className="mt-4 animate-fade-in">
@@ -528,6 +497,40 @@ export default function AIChatbot() {
             </div>
           </div>
         </CardContent>
+      )}
+
+      {/* Compact Toast Notification for Disclaimer */}
+      {showDisclaimerToast && (
+        <div className="fixed bottom-6 left-6 z-40 animate-fade-in">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-md p-2.5 max-w-64">
+            <div className="flex items-center gap-2">
+              <Info className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="text-xs text-gray-600">
+                  AI can make mistakes.{" "}
+                  <button
+                    onClick={() => {
+                      handleQuickAction("Book consultation");
+                      setShowDisclaimerToast(false);
+                    }}
+                    className="text-blue-600 hover:text-blue-800 underline transition-colors"
+                  >
+                    Consult Krisha
+                  </button>
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowDisclaimerToast(false)}
+                className="h-3.5 w-3.5 p-0 text-gray-400 hover:text-gray-600"
+                aria-label="Dismiss"
+              >
+                <X className="h-2.5 w-2.5" />
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </Card>
   );
