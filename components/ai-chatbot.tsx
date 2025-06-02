@@ -137,6 +137,14 @@ export default function AIChatbot() {
     isFirstMessage: boolean = false
   ) => {
     try {
+      // Prepare conversation history (excluding the greeting message)
+      const conversationHistory = messages
+        .slice(1) // Skip the initial greeting
+        .map((msg) => ({
+          text: msg.text,
+          isUser: msg.isUser,
+        }));
+
       const response = await fetch("/api/generate-message", {
         method: "POST",
         headers: {
@@ -146,6 +154,7 @@ export default function AIChatbot() {
           message: messageText,
           clientName: currentClientName,
           isFirstMessage: isFirstMessage,
+          conversationHistory: conversationHistory,
         }),
       });
 

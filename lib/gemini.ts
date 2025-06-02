@@ -80,12 +80,14 @@ const retryWithBackoff = async <T>(
  * @param message - The user's input message
  * @param currentClientName - The current known client name
  * @param isFirstMessage - Whether this is the first user message
+ * @param conversationHistory - Recent conversation messages for context
  * @returns Promise<ChatResponse> - The AI generated response with optional detected name
  */
 export const generateChatResponse = async (
   message: string,
   currentClientName: string = "Anonymous User",
-  isFirstMessage: boolean = false
+  isFirstMessage: boolean = false,
+  conversationHistory: Array<{ text: string; isUser: boolean }> = []
 ): Promise<ChatResponse> => {
   try {
     const result = await retryWithBackoff(
@@ -101,10 +103,25 @@ export const generateChatResponse = async (
 
         const chatSession = model.startChat({ generationConfig });
 
-        // Add context about the current client name and whether this is first message
-        const contextualMessage = isFirstMessage
-          ? `User message: "${message}". This is their first message - if they're introducing themselves with a name, greet them warmly using their name.`
-          : `User message from ${currentClientName}: "${message}"`;
+        // Build conversation context with recent history
+        let contextualMessage = "";
+
+        if (isFirstMessage) {
+          contextualMessage = `User message: "${message}". This is their first message - if they're introducing themselves with a name, greet them warmly using their name.`;
+        } else {
+          // Include recent conversation history to maintain context
+          const recentHistory = conversationHistory
+            .slice(-4) // Last 4 messages for context
+            .map((msg) => `${msg.isUser ? "User" : "Assistant"}: ${msg.text}`)
+            .join("\n");
+
+          contextualMessage = `Recent conversation:
+${recentHistory}
+
+Current user message from ${currentClientName}: "${message}"
+
+Please respond naturally without repeating greetings. Continue the conversation based on the context above.`;
+        }
 
         return await chatSession.sendMessage(contextualMessage);
       },

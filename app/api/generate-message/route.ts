@@ -9,6 +9,7 @@ export async function POST(req: Request) {
       message,
       clientName = "Anonymous User",
       isFirstMessage = false,
+      conversationHistory = [],
     } = await req.json();
 
     if (!message || typeof message !== "string") {
@@ -18,11 +19,12 @@ export async function POST(req: Request) {
       );
     }
 
-    // Generate AI response with smart name detection
+    // Generate AI response with smart name detection and conversation history
     const aiResponse = await generateChatResponse(
       message,
       clientName,
-      isFirstMessage
+      isFirstMessage,
+      conversationHistory
     );
 
     // Determine the actual client name to use
