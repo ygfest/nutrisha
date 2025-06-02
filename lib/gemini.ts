@@ -29,7 +29,54 @@ interface ChatResponse {
 }
 
 /**
- * Generates an AI chat response using Google's Gemini model
+ * Sleep function for retry delays
+ */
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Retry function with exponential backoff
+ */
+const retryWithBackoff = async <T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 3,
+  baseDelay: number = 1000
+): Promise<T> => {
+  let lastError: any;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error: any) {
+      lastError = error;
+
+      // Check if this is a retryable error
+      const isRetryable =
+        error?.status === 503 || // Service Unavailable
+        error?.status === 429 || // Too Many Requests
+        error?.status === 500 || // Internal Server Error
+        error?.message?.includes("overloaded") ||
+        error?.message?.includes("try again later");
+
+      if (!isRetryable || attempt === maxRetries) {
+        throw error;
+      }
+
+      // Calculate delay with exponential backoff and jitter
+      const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 1000;
+      console.log(
+        `Gemini API error (attempt ${attempt + 1}/${
+          maxRetries + 1
+        }), retrying in ${Math.round(delay)}ms...`
+      );
+      await sleep(delay);
+    }
+  }
+
+  throw lastError;
+};
+
+/**
+ * Generates an AI chat response using Google's Gemini model with retry logic
  * @param message - The user's input message
  * @param currentClientName - The current known client name
  * @param isFirstMessage - Whether this is the first user message
@@ -41,23 +88,30 @@ export const generateChatResponse = async (
   isFirstMessage: boolean = false
 ): Promise<ChatResponse> => {
   try {
-    const model = geminiAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
-      systemInstruction: NUTRITION_ASSISTANT_PROMPT,
-    });
+    const result = await retryWithBackoff(
+      async () => {
+        const model = geminiAI.getGenerativeModel({
+          model: "gemini-2.0-flash",
+          systemInstruction: NUTRITION_ASSISTANT_PROMPT,
+        });
 
-    const generationConfig = {
-      ...DEFAULT_GENERATION_CONFIG,
-    };
+        const generationConfig = {
+          ...DEFAULT_GENERATION_CONFIG,
+        };
 
-    const chatSession = model.startChat({ generationConfig });
+        const chatSession = model.startChat({ generationConfig });
 
-    // Add context about the current client name and whether this is first message
-    const contextualMessage = isFirstMessage
-      ? `User message: "${message}". This is their first message - if they're introducing themselves with a name, greet them warmly using their name.`
-      : `User message from ${currentClientName}: "${message}"`;
+        // Add context about the current client name and whether this is first message
+        const contextualMessage = isFirstMessage
+          ? `User message: "${message}". This is their first message - if they're introducing themselves with a name, greet them warmly using their name.`
+          : `User message from ${currentClientName}: "${message}"`;
 
-    const result = await chatSession.sendMessage(contextualMessage);
+        return await chatSession.sendMessage(contextualMessage);
+      },
+      3,
+      1000
+    ); // 3 retries with 1 second base delay
+
     const responseText = result.response.text().trim();
 
     // Extract name from AI's response if it's a first message
@@ -87,10 +141,26 @@ export const generateChatResponse = async (
       response: responseText,
       detectedName,
     };
-  } catch (error) {
-    console.error("Error generating chat response:", error);
-    throw new Error(
-      "Failed to generate chat response. Please try again later."
-    );
+  } catch (error: any) {
+    console.error("Error generating chat response after retries:", error);
+
+    // Provide more specific error messages based on the error type
+    if (error?.status === 503 || error?.message?.includes("overloaded")) {
+      throw new Error(
+        "I'm experiencing high demand right now. Please try sending your message again in a moment."
+      );
+    } else if (error?.status === 429) {
+      throw new Error(
+        "I'm receiving too many requests. Please wait a moment before trying again."
+      );
+    } else if (error?.status === 401 || error?.message?.includes("API key")) {
+      throw new Error(
+        "There's an issue with the AI service configuration. Please contact support."
+      );
+    } else {
+      throw new Error(
+        "I'm having trouble responding right now. Please try again in a moment."
+      );
+    }
   }
 };

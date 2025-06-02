@@ -7,7 +7,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, X, Minimize2, Maximize2 } from "lucide-react";
+import {
+  Send,
+  X,
+  Minimize2,
+  Maximize2,
+  Camera,
+  Calendar,
+  MessageCircle,
+  Phone,
+  ChefHat,
+  Scale,
+  HelpCircle,
+} from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 interface Message {
@@ -15,6 +27,13 @@ interface Message {
   text: string;
   isUser: boolean;
   timestamp: Date;
+}
+
+interface QuickAction {
+  id: string;
+  text: string;
+  icon: React.ReactNode;
+  category: "general" | "tracking" | "planning" | "support";
 }
 
 export default function AIChatbot() {
@@ -31,6 +50,7 @@ export default function AIChatbot() {
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(false);
+  const [hasShownQuickActions, setHasShownQuickActions] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when messages change or typing starts
@@ -40,14 +60,48 @@ export default function AIChatbot() {
     }
   }, [messages, isTyping]);
 
-  const quickActions = [
-    "Ask a Question",
-    "Track calories with just a photo",
-    "Getting Started with Meal Planning",
-    "Book a Consultation",
-    "Healthy Recipe Ideas",
-    "Weight Management Tips",
-    "Contact Support",
+  // Show quick actions after a brief delay when conversation gets started
+  useEffect(() => {
+    if (messages.length >= 3 && !hasShownQuickActions && !isTyping) {
+      const timer = setTimeout(() => {
+        setShowQuickActions(true);
+        setHasShownQuickActions(true);
+      }, 1500); // Show after 1.5 seconds when there are 3+ messages
+      return () => clearTimeout(timer);
+    }
+  }, [messages.length, hasShownQuickActions, isTyping]);
+
+  const quickActions: QuickAction[] = [
+    {
+      id: "photo-tracking",
+      text: "Photo tracking",
+      icon: <Camera className="h-4 w-4" />,
+      category: "tracking",
+    },
+    {
+      id: "meal-planning",
+      text: "Meal planning",
+      icon: <ChefHat className="h-4 w-4" />,
+      category: "planning",
+    },
+    {
+      id: "book-consultation",
+      text: "Book consultation",
+      icon: <Calendar className="h-4 w-4" />,
+      category: "support",
+    },
+    {
+      id: "weight-tips",
+      text: "Weight tips",
+      icon: <Scale className="h-4 w-4" />,
+      category: "general",
+    },
+    {
+      id: "ask-question",
+      text: "Ask anything",
+      icon: <MessageCircle className="h-4 w-4" />,
+      category: "general",
+    },
   ];
 
   const sendMessageToAPI = async (
@@ -146,9 +200,6 @@ export default function AIChatbot() {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, aiResponse]);
-        if (isFirstUserMessage) {
-          setShowQuickActions(true);
-        }
       }, 500);
       return;
     }
@@ -174,11 +225,6 @@ export default function AIChatbot() {
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, aiResponse]);
-
-      // Show quick actions after the first exchange
-      if (isFirstUserMessage) {
-        setShowQuickActions(true);
-      }
     } catch (error) {
       setIsTyping(false);
       const errorResponse: Message = {
@@ -188,10 +234,6 @@ export default function AIChatbot() {
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorResponse]);
-
-      if (isFirstUserMessage) {
-        setShowQuickActions(true);
-      }
     }
   };
 
@@ -340,19 +382,37 @@ export default function AIChatbot() {
                 </div>
               )}
 
-              {/* Quick Actions - Show after first exchange */}
+              {/* Quick Actions - Modern pill-style horizontal layout */}
               {showQuickActions && !isTyping && (
-                <div className="space-y-3 mt-6 animate-fade-in">
-                  {quickActions.map((action, index) => (
+                <div className="mt-4 animate-fade-in">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-xs text-gray-500 font-medium">
+                      Quick suggestions:
+                    </p>
                     <Button
-                      key={index}
-                      variant="outline"
-                      className="w-full text-left justify-start h-auto p-4 text-sm border-sage-200 hover:bg-gradient-to-r hover:from-sage-50 hover:to-sage-100 hover:border-sage-300 transition-all duration-200 rounded-xl shadow-sm hover:shadow-md"
-                      onClick={() => handleQuickAction(action)}
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowQuickActions(false)}
+                      className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
+                      aria-label="Hide suggestions"
                     >
-                      <span className="font-medium">{action}</span>
+                      <X className="h-3 w-3" />
                     </Button>
-                  ))}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {quickActions.map((action) => (
+                      <Button
+                        key={action.id}
+                        variant="outline"
+                        size="sm"
+                        className="h-8 px-3 text-xs border-sage-200 hover:bg-sage-50 hover:border-sage-300 transition-all duration-200 rounded-full flex items-center gap-1.5 whitespace-nowrap"
+                        onClick={() => handleQuickAction(action.text)}
+                      >
+                        {action.icon}
+                        <span>{action.text}</span>
+                      </Button>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -364,18 +424,29 @@ export default function AIChatbot() {
           {/* Enhanced Input Area */}
           <div className="p-6 border-t border-gray-100 bg-white">
             <div className="flex space-x-3">
-              <Input
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder={
-                  messages.length === 1
-                    ? "Type your name or ask a question..."
-                    : "Ask about nutrition..."
-                }
-                className="flex-1 text-sm border-sage-200 focus:border-sage-400 focus:ring-sage-400 rounded-xl px-4 py-3 bg-gray-50 focus:bg-white transition-all duration-200"
-                aria-label="Type your nutrition question"
-              />
+              <div className="flex-1 relative">
+                <Input
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder={
+                    messages.length === 1
+                      ? "Type your name or ask a question..."
+                      : "Ask about nutrition..."
+                  }
+                  className="text-sm border-sage-200 focus:border-sage-400 focus:ring-sage-400 rounded-xl px-4 py-3 bg-gray-50 focus:bg-white transition-all duration-200 pr-12"
+                  aria-label="Type your nutrition question"
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowQuickActions(!showQuickActions)}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-gray-400 hover:text-sage-600"
+                  aria-label="Toggle quick suggestions"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                </Button>
+              </div>
               <Button
                 onClick={handleSendMessage}
                 disabled={!inputValue.trim()}

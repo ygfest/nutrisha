@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { generateChatResponse } from "@/lib/gemini";
+//import { generateChatResponse } from "@/lib/openai";
 import { ChatService } from "@/lib/chat-service";
 
 export async function POST(req: Request) {
