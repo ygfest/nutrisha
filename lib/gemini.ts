@@ -60,45 +60,23 @@ export const generateChatResponse = async (
     const result = await chatSession.sendMessage(contextualMessage);
     const responseText = result.response.text().trim();
 
-    // Simple name detection from the user's original message when it's first message
+    // Extract name from AI's response if it's a first message
     let detectedName: string | undefined;
     if (isFirstMessage && currentClientName === "Anonymous User") {
+      // Look for patterns like "Hi [Name]!" in the AI response
       const namePatterns = [
-        /(?:my name is|i'm|i am|im |call me|it's|this is)\s+([a-zA-Z]{2,}(?:\s+[a-zA-Z]+)*)/i,
-        /(?:^|\s)(?:i'm|i am|im)\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*)/i,
-        /(?:hi|hello|hey),?\s+(?:i'm|i am|im|my name is)\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*)/i,
-        /^([A-Z][a-zA-Z]{2,}(?:\s+[A-Z][a-zA-Z]+)*)$/i,
+        /^(?:Hi|Hello|Hey)\s+([A-Z][a-zA-Z]+)!/,
+        /^(?:Hi|Hello|Hey)\s+([A-Z][a-zA-Z]+),/,
+        /^(?:Hi|Hello|Hey)\s+([A-Z][a-zA-Z]+)\s+[A-Z][a-zA-Z]+!/,
+        /^(?:Hi|Hello|Hey)\s+([A-Z][a-zA-Z]+)\s+[A-Z][a-zA-Z]+,/,
       ];
 
       for (const pattern of namePatterns) {
-        const match = message.match(pattern);
+        const match = responseText.match(pattern);
         if (match && match[1]) {
           const potentialName = match[1].trim();
-          const nonNames = [
-            "anonymous",
-            "user",
-            "nothing",
-            "none",
-            "no",
-            "nope",
-            "skip",
-            "pass",
-            "good",
-            "fine",
-            "okay",
-          ];
-          if (
-            !nonNames.includes(potentialName.toLowerCase()) &&
-            potentialName.length >= 2
-          ) {
-            // Properly capitalize the name
-            detectedName = potentialName
-              .split(" ")
-              .map(
-                (word) =>
-                  word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-              )
-              .join(" ");
+          if (potentialName.length >= 2) {
+            detectedName = potentialName;
             break;
           }
         }

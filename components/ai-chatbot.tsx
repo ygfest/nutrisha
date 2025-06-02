@@ -343,9 +343,6 @@ export default function AIChatbot() {
               {/* Quick Actions - Show after first exchange */}
               {showQuickActions && !isTyping && (
                 <div className="space-y-3 mt-6 animate-fade-in">
-                  <p className="text-xs text-gray-500 text-center mb-4">
-                    Here are some things I can help you with:
-                  </p>
                   {quickActions.map((action, index) => (
                     <Button
                       key={index}
