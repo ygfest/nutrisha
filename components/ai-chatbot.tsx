@@ -50,43 +50,6 @@ export default function AIChatbot() {
     "Contact Support",
   ];
 
-  // Simple name detection for display purposes only
-  const detectNameForDisplay = (message: string): string | null => {
-    const msg = message.toLowerCase().trim();
-    const namePatterns = [
-      /^(?:my name is|i'm|i am|call me|it's|this is)\s+([a-zA-Z]+(?:\s+[a-zA-Z]+)?)/i,
-      /^([a-zA-Z]{2,}(?:\s+[a-zA-Z]+)?)$/i,
-      /^(?:hi|hello|hey),?\s*(?:my name is|i'm|i am)?\s*([a-zA-Z]+(?:\s+[a-zA-Z]+)?)/i,
-    ];
-
-    for (const pattern of namePatterns) {
-      const match = message.match(pattern);
-      if (match && match[1]) {
-        const potentialName = match[1].trim();
-        const nonNames = [
-          "anonymous",
-          "user",
-          "nothing",
-          "none",
-          "no",
-          "nope",
-          "skip",
-          "pass",
-        ];
-        if (
-          !nonNames.includes(potentialName.toLowerCase()) &&
-          potentialName.length >= 2
-        ) {
-          return (
-            potentialName.charAt(0).toUpperCase() +
-            potentialName.slice(1).toLowerCase()
-          );
-        }
-      }
-    }
-    return null;
-  };
-
   const sendMessageToAPI = async (
     messageText: string,
     currentClientName: string = clientName,
@@ -199,8 +162,8 @@ export default function AIChatbot() {
       );
 
       // Update client name if detected
-      if (apiResponse.detectedName && apiResponse.clientName !== clientName) {
-        setClientName(apiResponse.clientName);
+      if (apiResponse.detectedName) {
+        setClientName(apiResponse.detectedName);
       }
 
       setIsTyping(false);

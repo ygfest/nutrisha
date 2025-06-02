@@ -2,48 +2,6 @@ import { NextResponse } from "next/server";
 import { generateChatResponse } from "@/lib/gemini";
 import { ChatService } from "@/lib/chat-service";
 
-// Simple name detection for server-side processing
-function extractNameFromMessage(message: string): string | null {
-  const msg = message.toLowerCase().trim();
-  const namePatterns = [
-    /^(?:my name is|i'm|i am|call me|it's|this is)\s+([a-zA-Z]+(?:\s+[a-zA-Z]+)?)/i,
-    /^([a-zA-Z]{2,}(?:\s+[a-zA-Z]+)?)$/i,
-    /^(?:hi|hello|hey),?\s*(?:my name is|i'm|i am)?\s*([a-zA-Z]+(?:\s+[a-zA-Z]+)?)/i,
-  ];
-
-  for (const pattern of namePatterns) {
-    const match = message.match(pattern);
-    if (match && match[1]) {
-      const potentialName = match[1].trim();
-      const nonNames = [
-        "anonymous",
-        "user",
-        "nothing",
-        "none",
-        "no",
-        "nope",
-        "skip",
-        "pass",
-        "prefer",
-        "stay",
-      ];
-      if (
-        !nonNames.includes(potentialName.toLowerCase()) &&
-        potentialName.length >= 2
-      ) {
-        // Properly format the name
-        return potentialName
-          .split(" ")
-          .map(
-            (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-          )
-          .join(" ");
-      }
-    }
-  }
-  return null;
-}
-
 export async function POST(req: Request) {
   try {
     const {
@@ -59,25 +17,24 @@ export async function POST(req: Request) {
       );
     }
 
-    // Extract name if this might be a name introduction
-    let detectedName = null;
+    // Generate AI response with smart name detection
+    const aiResponse = await generateChatResponse(
+      message,
+      clientName,
+      isFirstMessage
+    );
+
+    // Determine the actual client name to use
     let actualClientName = clientName;
-
-    if (isFirstMessage || clientName === "Anonymous User") {
-      detectedName = extractNameFromMessage(message);
-      if (detectedName) {
-        actualClientName = detectedName;
-      }
+    if (aiResponse.detectedName) {
+      actualClientName = aiResponse.detectedName;
     }
-
-    // Generate AI response
-    const response = await generateChatResponse(message);
 
     // Save the conversation to database with the actual client name
     try {
       await ChatService.saveChatConversation(
         message,
-        response,
+        aiResponse.response,
         actualClientName
       );
     } catch (dbError) {
@@ -86,8 +43,8 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({
-      response,
-      detectedName: detectedName,
+      response: aiResponse.response,
+      detectedName: aiResponse.detectedName,
       clientName: actualClientName,
     });
   } catch (error) {
