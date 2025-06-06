@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://nutrisha.vercel.app/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Allow indexing of static assets
+Allow: /images/
+Allow: /_next/static/
+
+# Block admin routes (if any exist in the future)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+
+# Allow all pages for search engines
+Allow: /
+Allow: /book-appointment 

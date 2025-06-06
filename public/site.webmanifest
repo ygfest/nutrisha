@@ -1,0 +1,41 @@
+{
+  "name": "Krisha Nobora, RND - Nutrition Consultant",
+  "short_name": "Krisha RND",
+  "description": "Expert nutrition consultation with Krisha Nobora, Registered Nutritionist-Dietitian. Personalized meal plans, weight management, and therapeutic diet counseling.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#8FBC8F",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["health", "nutrition", "lifestyle", "medical"],
+  "icons": [
+    {
+      "src": "/images/nutritionist-avatar.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/nutritionist-avatar.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Book Consultation",
+      "short_name": "Book",
+      "description": "Schedule a nutrition consultation",
+      "url": "/book-appointment",
+      "icons": [
+        {
+          "src": "/images/nutritionist-avatar.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}
