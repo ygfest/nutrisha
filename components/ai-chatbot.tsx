@@ -226,7 +226,10 @@ export default function AIChatbot() {
     const isFirstUserMessage = messages.length === 1;
 
     // Special response for "labyu"
-    if (messageText.toLowerCase().trim() === "labyu" || "labyuu") {
+    if (
+      messageText.toLowerCase().trim() === "labyu" ||
+      messageText.toLowerCase().trim() === "labyuu"
+    ) {
       setTimeout(() => {
         setIsTyping(false);
         const aiResponse: Message = {
