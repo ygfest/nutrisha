@@ -299,7 +299,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-sage-600">2024</div>
+                  <div className="text-3xl font-bold text-sage-600">2025</div>
                   <div className="text-gray-600 font-medium">Licensed RND</div>
                 </div>
                 <div className="text-center">
