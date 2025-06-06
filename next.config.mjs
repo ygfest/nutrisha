@@ -17,9 +17,6 @@ const nextConfig = {
   generateEtags: true,
   trailingSlash: false,
 
-  // Performance optimizations
-  swcMinify: true,
-
   // SEO improvements
   async headers() {
     return [
