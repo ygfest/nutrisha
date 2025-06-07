@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,15 +29,46 @@ const timeSlots = [
   "4:30 PM",
 ];
 
-// Mock unavailable times for demo
-const unavailableTimes = ["10:00 AM", "2:00 PM", "3:30 PM"];
-
 export function BookingCalendar({
   selectedDate,
   onDateSelect,
   selectedTime,
   onTimeSelect,
 }: BookingCalendarProps) {
+  const [availableSlots, setAvailableSlots] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch availability when date changes
+  useEffect(() => {
+    if (!selectedDate) {
+      setAvailableSlots([]);
+      return;
+    }
+
+    const fetchAvailability = async () => {
+      setLoading(true);
+      try {
+        const dateStr = selectedDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+        const response = await fetch(`/api/availability?date=${dateStr}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          setAvailableSlots(data.availableSlots || []);
+        } else {
+          console.error("Failed to fetch availability:", data.error);
+          setAvailableSlots([]);
+        }
+      } catch (error) {
+        console.error("Error fetching availability:", error);
+        setAvailableSlots([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAvailability();
+  }, [selectedDate]);
+
   const isDateDisabled = (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -47,22 +79,7 @@ export function BookingCalendar({
 
   const isTimeAvailable = (time: string) => {
     if (!selectedDate) return false;
-
-    const today = new Date();
-    const isToday = selectedDate.toDateString() === today.toDateString();
-
-    if (isToday) {
-      const currentHour = today.getHours();
-      const timeHour = Number.parseInt(time.split(":")[0]);
-      const isPM = time.includes("PM");
-      const hour24 = isPM && timeHour !== 12 ? timeHour + 12 : timeHour;
-
-      // Disable past times for today
-      if (hour24 <= currentHour) return false;
-    }
-
-    // Check if time is in unavailable list
-    return !unavailableTimes.includes(time);
+    return availableSlots.includes(time);
   };
 
   return (
@@ -153,6 +170,11 @@ export function BookingCalendar({
                 Please select a date to view available times
               </p>
             </div>
+          ) : loading ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sage-600 mx-auto mb-4"></div>
+              <p className="text-gray-500">Loading available times...</p>
+            </div>
           ) : (
             <div className="grid grid-cols-2 gap-3">
               {timeSlots.map((time) => {
@@ -167,8 +189,8 @@ export function BookingCalendar({
                       isSelected
                         ? "bg-sage-500 hover:bg-sage-600 text-white"
                         : isAvailable
-                        ? "border-sage-200 hover:bg-sage-50 hover:border-sage-300"
-                        : "opacity-50 cursor-not-allowed border-gray-200 text-gray-400"
+                          ? "border-sage-200 hover:bg-sage-50 hover:border-sage-300"
+                          : "opacity-50 cursor-not-allowed border-gray-200 text-gray-400"
                     }`}
                     onClick={() => isAvailable && onTimeSelect(time)}
                     disabled={!isAvailable}
@@ -178,6 +200,15 @@ export function BookingCalendar({
                   </Button>
                 );
               })}
+            </div>
+          )}
+
+          {selectedDate && !loading && availableSlots.length === 0 && (
+            <div className="text-center py-6 bg-red-50 rounded-lg mt-4">
+              <p className="text-red-600 font-medium">No available times</p>
+              <p className="text-red-500 text-sm">
+                Please select a different date
+              </p>
             </div>
           )}
 

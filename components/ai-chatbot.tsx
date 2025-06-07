@@ -15,16 +15,31 @@ import {
   Camera,
   Calendar,
   MessageCircle,
-  Phone,
   ChefHat,
   Scale,
-  HelpCircle,
   Sparkles,
   Info,
-  AlertCircle,
-  Shield,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+
+const glareAnimation = `
+  @keyframes glare {
+    0% {
+      transform: translateX(-150%) rotate(20deg);
+      opacity: 0;
+    }
+    15% {
+      opacity: 1;
+    }
+    85% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(250%) rotate(20deg);
+      opacity: 0;
+    }
+  }
+`;
 
 interface Message {
   id: string;
@@ -47,7 +62,7 @@ export default function AIChatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      text: "Hello! I'm Krisha, your nutritionist. What's your name? (This helps me personalize our conversation, but feel free to stay anonymous if you prefer!)",
+      text: "Hi! I'm Krisha, your nutrition assistant. What's your name?",
       isUser: false,
       timestamp: new Date(),
     },
@@ -101,7 +116,7 @@ export default function AIChatbot() {
   const quickActions: QuickAction[] = [
     {
       id: "photo-tracking",
-      text: "Photo tracking",
+      text: "Track Calories with Photo",
       icon: <Camera className="h-4 w-4" />,
       category: "tracking",
     },
@@ -134,7 +149,7 @@ export default function AIChatbot() {
   const sendMessageToAPI = async (
     messageText: string,
     currentClientName: string = clientName,
-    isFirstMessage: boolean = false
+    isFirstMessage = false
   ) => {
     try {
       // Prepare conversation history (excluding the greeting message)
@@ -444,9 +459,49 @@ export default function AIChatbot() {
                         key={action.id}
                         variant="outline"
                         size="sm"
-                        className="h-8 px-3 text-xs border-sage-200 hover:bg-sage-50 hover:border-sage-300 transition-all duration-200 rounded-full flex items-center gap-1.5 whitespace-nowrap"
+                        className={`h-8 px-3 text-xs border-sage-200 hover:bg-sage-50 hover:border-sage-300 transition-all duration-200 rounded-full flex items-center gap-1.5 whitespace-nowrap ${
+                          action.id === "photo-tracking"
+                            ? "relative overflow-hidden"
+                            : ""
+                        }`}
                         onClick={() => handleQuickAction(action.text)}
                       >
+                        {action.id === "photo-tracking" && (
+                          <>
+                            <style
+                              dangerouslySetInnerHTML={{
+                                __html: glareAnimation,
+                              }}
+                            />
+                            <div
+                              className="absolute inset-0 pointer-events-none"
+                              style={{
+                                background:
+                                  "linear-gradient(110deg, transparent 25%, rgba(255, 255, 255, 0.4) 45%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.4) 55%, transparent 75%)",
+                                width: "200%",
+                                height: "100%",
+                                animation:
+                                  "glare 3s cubic-bezier(0.4, 0.0, 0.2, 1) infinite",
+                                animationDelay: "2s",
+                                filter: "blur(0.5px)",
+                                mixBlendMode: "overlay",
+                              }}
+                            />
+                            <div
+                              className="absolute inset-0 pointer-events-none"
+                              style={{
+                                background:
+                                  "linear-gradient(90deg, transparent 20%, rgba(59, 130, 246, 0.15) 40%, rgba(147, 51, 234, 0.15) 50%, rgba(236, 72, 153, 0.15) 60%, transparent 80%)",
+                                width: "150%",
+                                height: "100%",
+                                animation:
+                                  "glare 3s cubic-bezier(0.4, 0.0, 0.2, 1) infinite",
+                                animationDelay: "2.1s",
+                                filter: "blur(1px)",
+                              }}
+                            />
+                          </>
+                        )}
                         {action.icon}
                         <span>{action.text}</span>
                       </Button>

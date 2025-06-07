@@ -18,6 +18,24 @@ import {
 
 type BookingStep = "type" | "datetime" | "form" | "confirmation";
 
+const appointmentTypeNames: Record<string, string> = {
+  "initial-consultation": "Initial Consultation",
+  "follow-up": "Follow-up Session",
+  "meal-planning": "Meal Planning Session",
+  "group-session": "Group Workshop",
+  "sports-nutrition": "Sports Nutrition",
+  "educational-session": "Nutrition Education",
+};
+
+const appointmentTypeDurations: Record<string, number> = {
+  "initial-consultation": 90,
+  "follow-up": 60,
+  "meal-planning": 75,
+  "group-session": 120,
+  "sports-nutrition": 90,
+  "educational-session": 60,
+};
+
 export default function BookAppointmentPage() {
   const [currentStep, setCurrentStep] = useState<BookingStep>("type");
   const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -25,6 +43,7 @@ export default function BookAppointmentPage() {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
+  const [bookingData, setBookingData] = useState<any>(null);
 
   // Scroll to top when step changes
   useEffect(() => {
@@ -86,15 +105,48 @@ export default function BookAppointmentPage() {
   const handleFormSubmit = async (formData: any) => {
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          appointmentType: selectedType,
+          selectedDate: selectedDate?.toISOString(),
+          selectedTime,
+        }),
+      });
 
-    setIsSubmitting(false);
-    setBookingConfirmed(true);
-    setCurrentStep("confirmation");
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to book appointment");
+      }
+
+      setBookingData({
+        clientName: result.clientName,
+        bookingId: result.bookingId,
+        appointmentType: appointmentTypeNames[selectedType!],
+        selectedDate,
+        selectedTime,
+        duration: appointmentTypeDurations[selectedType!],
+        meetLink: result.meetLink,
+        googleCalendarUrl: result.googleCalendarUrl,
+        outlookCalendarUrl: result.outlookCalendarUrl,
+      });
+      setBookingConfirmed(true);
+      setCurrentStep("confirmation");
+    } catch (error) {
+      console.error("Booking error:", error);
+      alert("Failed to book appointment. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  if (bookingConfirmed && currentStep === "confirmation") {
+  if (bookingConfirmed && currentStep === "confirmation" && bookingData) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-sage-50/30 to-white">
         <div className="container mx-auto px-4 py-16">
@@ -107,8 +159,12 @@ export default function BookAppointmentPage() {
                 Booking Confirmed!
               </h1>
               <p className="text-lg text-gray-600 mb-8">
-                Thank you for booking your appointment with Krisha. You'll
-                receive a confirmation email shortly with all the details.
+                Thank you,{" "}
+                <span className="font-semibold text-sage-600">
+                  {bookingData.clientName}
+                </span>
+                , for booking your appointment with Krisha. You'll receive a
+                confirmation email shortly with all the details.
               </p>
             </div>
 
@@ -119,13 +175,27 @@ export default function BookAppointmentPage() {
                 </h3>
                 <div className="space-y-3 text-left">
                   <div className="flex justify-between">
+                    <span className="text-gray-600">Booking ID:</span>
+                    <span className="font-medium">
+                      #{bookingData.bookingId}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Client:</span>
+                    <span className="font-medium">
+                      {bookingData.clientName}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
                     <span className="text-gray-600">Service:</span>
-                    <span className="font-medium">Initial Consultation</span>
+                    <span className="font-medium">
+                      {bookingData.appointmentType}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Date:</span>
                     <span className="font-medium">
-                      {selectedDate?.toLocaleDateString("en-US", {
+                      {bookingData.selectedDate?.toLocaleDateString("en-US", {
                         weekday: "long",
                         year: "numeric",
                         month: "long",
@@ -135,15 +205,101 @@ export default function BookAppointmentPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Time:</span>
-                    <span className="font-medium">{selectedTime}</span>
+                    <span className="font-medium">
+                      {bookingData.selectedTime}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Duration:</span>
-                    <span className="font-medium">90 minutes</span>
+                    <span className="font-medium">
+                      {bookingData.duration} minutes
+                    </span>
                   </div>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Virtual Consultation Section */}
+            {bookingData.meetLink && (
+              <Card className="border-sage-200 bg-gradient-to-r from-sage-50 to-sage-100 mb-8">
+                <CardContent className="p-6">
+                  <div className="text-center">
+                    <h3 className="font-semibold text-sage-900 mb-2 text-lg">
+                      Virtual Consultation
+                    </h3>
+                    <p className="text-sage-700 mb-4">
+                      Join your appointment using Google Meet
+                    </p>
+                    <Button
+                      asChild
+                      className="bg-gradient-to-r from-sage-600 to-sage-700 hover:from-sage-700 hover:to-sage-800 text-white mb-4"
+                    >
+                      <a
+                        href={bookingData.meetLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Join Google Meet
+                      </a>
+                    </Button>
+                    <p className="text-sm text-sage-600">
+                      Meeting link: <br />
+                      <span className="font-mono text-xs break-all bg-white px-2 py-1 rounded border">
+                        {bookingData.meetLink}
+                      </span>
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Calendar Section */}
+            {(bookingData.googleCalendarUrl ||
+              bookingData.outlookCalendarUrl) && (
+              <Card className="border-sage-200 bg-gradient-to-r from-sage-50 to-sage-100 mb-8">
+                <CardContent className="p-6">
+                  <div className="text-center">
+                    <h3 className="font-semibold text-sage-900 mb-2 text-lg">
+                      Add to Your Calendar
+                    </h3>
+                    <p className="text-sage-700 mb-4">
+                      Never miss your appointment - add it to your calendar now!
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      {bookingData.googleCalendarUrl && (
+                        <Button
+                          asChild
+                          className="bg-gradient-to-r from-sage-500 to-sage-600 hover:from-sage-600 hover:to-sage-700 text-white border-0"
+                        >
+                          <a
+                            href={bookingData.googleCalendarUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Google Calendar
+                          </a>
+                        </Button>
+                      )}
+                      {bookingData.outlookCalendarUrl && (
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="border-sage-400 text-sage-700 hover:bg-sage-100"
+                        >
+                          <a
+                            href={bookingData.outlookCalendarUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Outlook Calendar
+                          </a>
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             <div className="space-y-4">
               <Button
@@ -203,8 +359,8 @@ export default function BookAppointmentPage() {
                         isCompleted
                           ? "bg-green-500 text-white"
                           : isActive
-                          ? "bg-sage-500 text-white"
-                          : "bg-gray-200 text-gray-500"
+                            ? "bg-sage-500 text-white"
+                            : "bg-gray-200 text-gray-500"
                       }`}
                     >
                       {isCompleted ? (

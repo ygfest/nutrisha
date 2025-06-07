@@ -12,6 +12,18 @@ export interface Client {
   email: string;
   phone: string | null;
   avatar_url: string | null;
+  date_of_birth: string | null;
+  gender: string | null;
+  emergency_contact: string | null;
+  emergency_phone: string | null;
+  health_goals: string | null;
+  dietary_restrictions: string | null;
+  allergies: string | null;
+  medications: string | null;
+  medical_conditions: string | null;
+  activity_level: string | null;
+  previous_nutrition: string | null;
+  referral_source: string | null;
   created_at: string;
   updated_at: string;
 }
