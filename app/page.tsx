@@ -615,7 +615,9 @@ export default function HomePage() {
                   <div className="flex flex-col items-center p-6 bg-white rounded-2xl shadow-sm border border-sage-100">
                     <Mail className="h-8 w-8 text-sage-500 mb-4" />
                     <h3 className="font-semibold text-gray-900 mb-2">Email</h3>
-                    <p className="text-gray-600">krisha.nobora@nutrition.ph</p>
+                    <p className="text-gray-600">
+                      missnutrition.krisha@gmail.com
+                    </p>
                   </div>
                   <div className="flex flex-col items-center p-6 bg-white rounded-2xl shadow-sm border border-sage-100">
                     <MapPin className="h-8 w-8 text-sage-500 mb-4" />
