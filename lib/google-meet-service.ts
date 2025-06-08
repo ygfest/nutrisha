@@ -66,7 +66,7 @@
 // - Bring any relevant medical records
 // - Ensure stable internet connection for video call
 
-// Contact: hello@missnutrition.krisha
+// Contact: missnutrition.krisha@gmail.com
 //       `.trim(),
 //       start: {
 //         dateTime: startDate.toISOString(),
@@ -79,7 +79,7 @@
 //       attendees: [
 //         { email: details.clientEmail, displayName: details.clientName },
 //         {
-//           email: process.env.GMAIL_EMAIL || "hello@missnutrition.krisha",
+//           email: process.env.GMAIL_EMAIL || "missnutrition.krisha@gmail.com",
 //           displayName: "Krisha Nobora, RND",
 //         },
 //       ],

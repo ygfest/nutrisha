@@ -307,7 +307,7 @@ export const BookingConfirmationEmail: React.FC<
                 fontSize: "14px",
               }}
             >
-              Contact us at <strong>hello@missnutrition.krisha</strong>
+              Contact us at <strong>missnutrition.krisha@gmail.com</strong>
               <br />
               or call us after booking confirmation
             </div>

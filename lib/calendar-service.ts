@@ -64,19 +64,19 @@ Preparation:
 - Bring any relevant medical records
 - Ensure stable internet connection for video call
 
-Contact: hello@missnutrition.krisha
+Contact: missnutrition.krisha@gmail.com
     `.trim(),
     location: `Virtual Consultation - ${meetLink}`,
     attendees: [
       { name: details.clientName, email: details.clientEmail },
       {
         name: "Krisha Nobora, RND",
-        email: process.env.GMAIL_EMAIL || "hello@missnutrition.krisha",
+        email: process.env.GMAIL_EMAIL || "missnutrition.krisha@gmail.com",
       },
     ],
     organizer: {
       name: "Krisha Nobora, RND",
-      email: process.env.GMAIL_EMAIL || "hello@missnutrition.krisha",
+      email: process.env.GMAIL_EMAIL || "missnutrition.krisha@gmail.com",
     },
     uid: `booking-${details.bookingId}@nutrisha.com`,
     productId: "Nutrisha Booking System",

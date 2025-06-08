@@ -311,10 +311,10 @@ export default function BookAppointmentPage() {
               <p className="text-sm text-gray-500">
                 Need to make changes? Contact us at{" "}
                 <a
-                  href="mailto:hello@missnutrition.krisha"
+                  href="mailto:missnutrition.krisha@gmail.com"
                   className="text-sage-600 hover:underline"
                 >
-                  hello@missnutrition.krisha
+                  missnutrition.krisha@gmail.com
                 </a>
               </p>
             </div>

@@ -364,7 +364,7 @@ function generateBookingConfirmationHTML(details: BookingDetails): string {
           <div class="contact-section">
             <div class="contact-title">Need to make changes?</div>
             <div class="contact-info">
-              Contact us at <strong>hello@missnutrition.krisha</strong><br>
+              Contact us at <strong>missnutrition.krisha@gmail.com</strong><br>
               or call us after booking confirmation
             </div>
           </div>
@@ -434,7 +434,7 @@ export async function sendBookingConfirmationEmail(
             : ""
         }
 
-        Need to make changes? Contact us at hello@missnutrition.krisha
+        Need to make changes? Contact us at missnutrition.krisha@gmail.com
 
         Best regards,
         Krisha Nobora, RND
