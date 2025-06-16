@@ -12,16 +12,10 @@
   "categories": ["health", "nutrition", "lifestyle", "medical"],
   "icons": [
     {
-      "src": "/images/nutritionist-avatar.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/images/nutritionist-avatar.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ],
   "shortcuts": [
