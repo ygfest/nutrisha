@@ -48,8 +48,11 @@ export function BookingCalendar({
     const fetchAvailability = async () => {
       setLoading(true);
       try {
-        const dateStr = selectedDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
-        const response = await fetch(`/api/availability?date=${dateStr}`);
+        const dateStr = selectedDate.toLocaleDateString("en-CA"); // Local YYYY-MM-DD
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const response = await fetch(
+          `/api/availability?date=${dateStr}&timezone=${encodeURIComponent(timezone)}`
+        );
         const data = await response.json();
 
         if (response.ok) {

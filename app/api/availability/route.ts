@@ -5,6 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const date = searchParams.get("date");
+    const timezone = searchParams.get("timezone") || "UTC";
 
     if (!date) {
       return NextResponse.json(
@@ -12,6 +13,10 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    console.log(
+      `Processing availability for date: ${date}, timezone: ${timezone}`
+    );
 
     // Get all bookings for the specified date
     const { data: bookings, error } = await supabase
@@ -83,19 +88,44 @@ export async function GET(request: NextRequest) {
       });
     });
 
-    // Also check for past times if it's today
-    const today = new Date();
-    const requestDate = new Date(date);
-    const isToday = requestDate.toDateString() === today.toDateString();
+    // Check for past times if it's today (using user's timezone)
+    const nowInUserTz = new Date(
+      new Date().toLocaleString("en-US", { timeZone: timezone })
+    );
+    const requestDateInUserTz = new Date(date + "T00:00:00");
+
+    // Format dates for comparison (YYYY-MM-DD)
+    const todayStr = nowInUserTz.toISOString().split("T")[0];
+    const requestDateStr = date;
+    const isToday = requestDateStr === todayStr;
+
+    console.log(
+      `Date comparison (${timezone}) - Request date: ${requestDateStr}, Today: ${todayStr}, isToday: ${isToday}, Current time: ${nowInUserTz.toLocaleTimeString()}`
+    );
 
     let finalAvailableSlots = availableSlots;
 
     if (isToday) {
-      const currentMinutes = today.getHours() * 60 + today.getMinutes();
+      // Add a 30-minute buffer - don't allow booking slots that are within 30 minutes
+      const bufferMinutes = 30;
+      const currentMinutes =
+        nowInUserTz.getHours() * 60 + nowInUserTz.getMinutes() + bufferMinutes;
+
+      console.log(
+        `Today check - Current time in ${timezone}: ${nowInUserTz.getHours()}:${nowInUserTz.getMinutes().toString().padStart(2, "0")}, Current minutes with buffer: ${currentMinutes}`
+      );
+
       finalAvailableSlots = availableSlots.filter((slot) => {
-        return timeToMinutes(slot) > currentMinutes;
+        const slotMinutes = timeToMinutes(slot);
+        const isAvailable = slotMinutes > currentMinutes;
+        console.log(
+          `Slot ${slot} (${slotMinutes} minutes) - Available: ${isAvailable}`
+        );
+        return isAvailable;
       });
     }
+
+    console.log(`Final available slots for ${date}:`, finalAvailableSlots);
 
     return NextResponse.json({
       date,
