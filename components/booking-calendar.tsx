@@ -82,7 +82,30 @@ export function BookingCalendar({
 
   const isTimeAvailable = (time: string) => {
     if (!selectedDate) return false;
-    return availableSlots.includes(time);
+    // Must be returned by backend as available
+    if (!availableSlots.includes(time)) return false;
+
+    // If the selected date is not today, the backend availability is enough
+    const today = new Date();
+    if (today.toDateString() !== selectedDate.toDateString()) {
+      return true;
+    }
+
+    // For today, ensure the slot is still in the future (add 30-minute buffer)
+    const timeToMinutes = (timeStr: string): number => {
+      const [timePart, period] = timeStr.split(" ");
+      const [h, m] = timePart.split(":").map(Number);
+      let hours = h;
+      if (period === "PM" && hours !== 12) hours += 12;
+      if (period === "AM" && hours === 12) hours = 0;
+      return hours * 60 + m;
+    };
+
+    const bufferMinutes = 30;
+    const currentMinutes =
+      today.getHours() * 60 + today.getMinutes() + bufferMinutes;
+
+    return timeToMinutes(time) > currentMinutes;
   };
 
   return (
