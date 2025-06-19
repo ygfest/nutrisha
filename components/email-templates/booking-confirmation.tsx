@@ -330,7 +330,7 @@ export const BookingConfirmationEmail: React.FC<
 
           <div style={{ textAlign: "center" }}>
             <a
-              href="https://nutrisha.vercel.app"
+              href="https://missnutrition-krisha.vercel.app"
               style={{
                 display: "inline-block",
                 background: "linear-gradient(135deg, #84cc16 0%, #65a30d 100%)",
