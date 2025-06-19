@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: "Book Nutrition Consultation - Krisha Nobora, RND",
     description:
       "Schedule your personalized nutrition consultation with expert guidance for weight management, therapeutic diets, and healthy lifestyle changes.",
-    url: "https://nutrisha.vercel.app/book-appointment",
+    url: "https://missnutrition-krisha.vercel.app/book-appointment",
     type: "website",
   },
   alternates: {
