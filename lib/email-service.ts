@@ -379,7 +379,7 @@ function generateBookingConfirmationHTML(details: BookingDetails): string {
           </ul>
           
           <div style="text-align: center;">
-            <a href="https://nutrisha.vercel.app" class="button">Visit Our Website</a>
+            <a href="https://missnutrition-krisha.vercel.app" class="button">Visit Our Website</a>
           </div>
           
           <p style="margin-top: 30px; color: #6b7280; font-style: italic;">
