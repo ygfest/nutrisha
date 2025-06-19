@@ -45,7 +45,7 @@ export default function HomePage() {
       "Professional nutrition consultation and personalized meal planning services",
     provider: {
       "@type": "Person",
-      "@id": "https://nutrisha.vercel.app#krisha-nobora",
+      "@id": "https://missnutrition-krisha.vercel.app#krisha-nobora",
     },
     areaServed: {
       "@type": "Country",
