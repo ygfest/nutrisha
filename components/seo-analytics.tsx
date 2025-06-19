@@ -96,7 +96,7 @@ export function SEOAnalytics({
               "addressRegion": "Metro Manila",
               "addressCountry": "Philippines"
             },
-            "url": "https://nutrisha.vercel.app",
+            "url": "https://missnutrition-krisha.vercel.app",
             "telephone": "+63-XXX-XXX-XXXX",
             "priceRange": "$$",
             "openingHours": "Mo-Fr 09:00-17:00",
