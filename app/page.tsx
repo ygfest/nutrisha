@@ -500,10 +500,8 @@ export default function HomePage() {
                         </AvatarFallback>
                       </Avatar>
                       <div className="absolute -bottom-6 -right-6 bg-gradient-to-br from-sage-500 to-sage-600 text-white p-4 rounded-2xl shadow-xl">
-                        <Heart className="h-8 w-8" />
                       </div>
                       <div className="absolute -top-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-sage-100">
-                        <Sparkles className="h-8 w-8 text-sage-500" />
                       </div>
                     </div>
                   </div>
