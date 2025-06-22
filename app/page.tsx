@@ -499,9 +499,9 @@ export default function HomePage() {
                           K
                         </AvatarFallback>
                       </Avatar>
-                      <div className="absolute -bottom-6 -right-6 bg-gradient-to-br from-sage-500 to-sage-600 text-white p-4 rounded-2xl shadow-xl">
+                      {/*<div className="absolute -bottom-6 -right-6 bg-gradient-to-br from-sage-500 to-sage-600 text-white p-4 rounded-2xl shadow-xl">*/}
                       </div>
-                      <div className="absolute -top-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-sage-100">
+                    {/*<div className="absolute -top-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-sage-100">*/}
                       </div>
                     </div>
                   </div>
