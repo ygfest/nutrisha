@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MessageSquare, Clock, ArrowRight } from "lucide-react";
 import { getRecentMessages } from "@/actions/dashboard";
-import type { Message } from "@/lib/types";
+import { useQuery } from "@tanstack/react-query";
 
 const getTypeColor = (type: string) => {
   switch (type) {
@@ -62,25 +61,21 @@ const formatTimeAgo = (dateString: string) => {
 };
 
 export function RecentMessages() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    data: messages = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["recent-messages"],
+    queryFn: () => getRecentMessages(5),
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
+  });
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const data = await getRecentMessages(5);
-        setMessages(data);
-      } catch (error) {
-        console.error("Failed to fetch messages:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMessages();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <Card className="border-sage-100">
         <CardHeader>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Table,
   TableBody,
@@ -61,37 +62,31 @@ const formatTime = (timeString: string) => {
 export function BookingsTable() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        const data = await getRecentBookings(20);
-        setBookings(data);
-      } catch (error) {
-        console.error("Failed to fetch bookings:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBookings();
-  }, []);
-
-  const filteredBookings = bookings.filter((booking) => {
-    const clientName = booking.client?.name || "";
-    const clientEmail = booking.client?.email || "";
-
-    const matchesSearch =
-      clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      clientEmail.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      statusFilter === "all" || booking.status === statusFilter;
-    return matchesSearch && matchesStatus;
+  const { data: bookings, isLoading } = useQuery({
+    queryKey: ["recent-bookings"],
+    queryFn: () => getRecentBookings(20),
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
   });
 
-  if (loading) {
+  const filteredBookings =
+    bookings?.filter((booking) => {
+      const clientName = booking.client?.name || "";
+      const clientEmail = booking.client?.email || "";
+
+      const matchesSearch =
+        clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        clientEmail.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        statusFilter === "all" || booking.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    }) || [];
+
+  if (isLoading) {
     return (
       <Card className="border-sage-100">
         <CardHeader>

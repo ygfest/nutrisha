@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { getDashboardStats } from "@/actions/dashboard";
 import type { DashboardStats } from "@/lib/types";
+import { useQuery } from "@tanstack/react-query";
 
 interface StatItem {
   title: string;
@@ -22,23 +23,19 @@ interface StatItem {
 }
 
 export function DashboardStats() {
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const dashboardStats = await getDashboardStats();
-        setStats(dashboardStats);
-      } catch (error) {
-        console.error("Failed to fetch dashboard stats:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, []);
+  const {
+    data: stats,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["dashboard-stats"],
+    queryFn: () => getDashboardStats(),
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
+  });
 
   const calculateChange = (
     current: number,
@@ -62,7 +59,7 @@ export function DashboardStats() {
     return `₱${amount.toLocaleString()}`;
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 6 }).map((_, index) => (
@@ -81,7 +78,7 @@ export function DashboardStats() {
     );
   }
 
-  if (!stats) {
+  if (isError || !stats) {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card className="border-sage-100">
