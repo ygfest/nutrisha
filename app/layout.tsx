@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://nutrisha.vercel.app"),
+  metadataBase: new URL("https://missnutrition-krisha.vercel.app"),
   alternates: {
     canonical: "/",
   },
