@@ -1,9 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, CheckCircle } from "lucide-react";
+import { useAvailabilityQuery } from "@/hooks/use-availability-query";
+import { getNowInManila, isTodayInManila } from "@/lib/timezone-utils";
 
 interface BookingCalendarProps {
   selectedDate: Date | undefined;
@@ -12,7 +14,8 @@ interface BookingCalendarProps {
   onTimeSelect: (time: string) => void;
 }
 
-const timeSlots = [
+// All possible time slots - used for display order
+const allTimeSlots = [
   "9:00 AM",
   "9:30 AM",
   "10:00 AM",
@@ -35,42 +38,19 @@ export function BookingCalendar({
   selectedTime,
   onTimeSelect,
 }: BookingCalendarProps) {
-  const [availableSlots, setAvailableSlots] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
+  // Get availability data using TanStack Query
+  // Note: All times are handled in Philippines timezone (Asia/Manila)
+  // Format date as YYYY-MM-DD for API consistency
+  const dateStr = selectedDate
+    ? `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(2, "0")}`
+    : undefined;
+  const {
+    data: availabilityData,
+    isLoading: loading,
+    error,
+  } = useAvailabilityQuery(dateStr, !!selectedDate);
 
-  // Fetch availability when date changes
-  useEffect(() => {
-    if (!selectedDate) {
-      setAvailableSlots([]);
-      return;
-    }
-
-    const fetchAvailability = async () => {
-      setLoading(true);
-      try {
-        const dateStr = selectedDate.toLocaleDateString("en-CA"); // Local YYYY-MM-DD
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const response = await fetch(
-          `/api/availability?date=${dateStr}&timezone=${encodeURIComponent(timezone)}`
-        );
-        const data = await response.json();
-
-        if (response.ok) {
-          setAvailableSlots(data.availableSlots || []);
-        } else {
-          console.error("Failed to fetch availability:", data.error);
-          setAvailableSlots([]);
-        }
-      } catch (error) {
-        console.error("Error fetching availability:", error);
-        setAvailableSlots([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAvailability();
-  }, [selectedDate]);
+  const availableSlots = availabilityData?.availableSlots || [];
 
   const isDateDisabled = (date: Date) => {
     const today = new Date();
@@ -82,30 +62,9 @@ export function BookingCalendar({
 
   const isTimeAvailable = (time: string) => {
     if (!selectedDate) return false;
-    // Must be returned by backend as available
-    if (!availableSlots.includes(time)) return false;
-
-    // If the selected date is not today, the backend availability is enough
-    const today = new Date();
-    if (today.toDateString() !== selectedDate.toDateString()) {
-      return true;
-    }
-
-    // For today, ensure the slot is still in the future (add 30-minute buffer)
-    const timeToMinutes = (timeStr: string): number => {
-      const [timePart, period] = timeStr.split(" ");
-      const [h, m] = timePart.split(":").map(Number);
-      let hours = h;
-      if (period === "PM" && hours !== 12) hours += 12;
-      if (period === "AM" && hours === 12) hours = 0;
-      return hours * 60 + m;
-    };
-
-    const bufferMinutes = 30;
-    const currentMinutes =
-      today.getHours() * 60 + today.getMinutes() + bufferMinutes;
-
-    return timeToMinutes(time) > currentMinutes;
+    // The backend already handles all availability logic including timezone
+    // We just need to check if the slot is in the available list
+    return availableSlots.includes(time);
   };
 
   return (
@@ -203,7 +162,7 @@ export function BookingCalendar({
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3">
-              {timeSlots.map((time) => {
+              {allTimeSlots.map((time: string) => {
                 const isAvailable = isTimeAvailable(time);
                 const isSelected = selectedTime === time;
 
@@ -229,21 +188,36 @@ export function BookingCalendar({
             </div>
           )}
 
-          {selectedDate && !loading && availableSlots.length === 0 && (
+          {/* Error state */}
+          {selectedDate && error && (
             <div className="text-center py-6 bg-red-50 rounded-lg mt-4">
-              <p className="text-red-600 font-medium">No available times</p>
+              <p className="text-red-600 font-medium">
+                Failed to load availability
+              </p>
               <p className="text-red-500 text-sm">
-                Please select a different date
+                Please try selecting the date again
               </p>
             </div>
           )}
+
+          {/* No available times */}
+          {selectedDate &&
+            !loading &&
+            !error &&
+            availableSlots.length === 0 && (
+              <div className="text-center py-6 bg-red-50 rounded-lg mt-4">
+                <p className="text-red-600 font-medium">No available times</p>
+                <p className="text-red-500 text-sm">
+                  Please select a different date
+                </p>
+              </div>
+            )}
 
           {selectedDate && (
             <div className="mt-6 p-4 bg-sage-50 rounded-lg">
               <h4 className="font-medium text-gray-900 mb-2">Time Zone</h4>
               <p className="text-sm text-gray-600">
-                All times shown in your local timezone (
-                {Intl.DateTimeFormat().resolvedOptions().timeZone})
+                All times shown in Philippines time (Asia/Manila)
               </p>
             </div>
           )}

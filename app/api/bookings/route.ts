@@ -43,6 +43,13 @@ const paymentMethodNames: Record<string, string> = {
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.json();
+    if (process.env.NODE_ENV === "development") {
+      console.log("Received booking data:", {
+        selectedDate: formData.selectedDate,
+        selectedTime: formData.selectedTime,
+        appointmentType: formData.appointmentType,
+      });
+    }
 
     // Extract booking data
     const {
@@ -88,7 +95,9 @@ export async function POST(request: NextRequest) {
         .update({
           name: clientName,
           phone,
-          date_of_birth: dateOfBirth || null,
+          date_of_birth: dateOfBirth
+            ? new Date(dateOfBirth).toISOString().split("T")[0]
+            : null,
           gender: gender || null,
           emergency_contact: emergencyContact || null,
           emergency_phone: emergencyPhone || null,
@@ -110,7 +119,9 @@ export async function POST(request: NextRequest) {
           name: clientName,
           email,
           phone,
-          date_of_birth: dateOfBirth || null,
+          date_of_birth: dateOfBirth
+            ? new Date(dateOfBirth).toISOString().split("T")[0]
+            : null,
           gender: gender || null,
           emergency_contact: emergencyContact || null,
           emergency_phone: emergencyPhone || null,
@@ -138,15 +149,34 @@ export async function POST(request: NextRequest) {
     }
 
     // Check for existing booking at the same time (prevent double booking)
-    const { data: existingBooking } = await supabase
-      .from("bookings")
-      .select("id")
-      .eq("date", selectedDate.split("T")[0])
-      .eq("time", selectedTime)
-      .in("status", ["confirmed", "pending"])
-      .single();
+    const bookingDate = selectedDate.includes("T")
+      ? selectedDate.split("T")[0]
+      : selectedDate;
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `Checking for existing booking: date=${bookingDate}, time=${selectedTime}`
+      );
+    }
+
+    const { data: existingBooking, error: existingBookingError } =
+      await supabase
+        .from("bookings")
+        .select("id")
+        .eq("date", bookingDate)
+        .eq("time", selectedTime)
+        .in("status", ["confirmed", "pending"])
+        .single();
+
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `Existing booking check: found=${!!existingBooking}, error=${existingBookingError?.message || "none"}`
+      );
+    }
 
     if (existingBooking) {
+      if (process.env.NODE_ENV === "development") {
+        console.log(`Found existing booking: ID=${existingBooking.id}`);
+      }
       return NextResponse.json(
         {
           error:
@@ -157,11 +187,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Create booking record
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `Creating booking: date=${bookingDate}, time=${selectedTime}`
+      );
+    }
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
       .insert({
         client_id: clientId,
-        date: selectedDate.split("T")[0], // Extract date part
+        date: bookingDate, // Use the same date format
         time: selectedTime,
         type: appointmentTypeNames[appointmentType],
         status: "confirmed",
@@ -176,6 +211,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: "Failed to create booking record" },
         { status: 500 }
+      );
+    }
+
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `Booking created successfully: ID=${booking.id}, date=${bookingDate}, time=${selectedTime}`
       );
     }
 

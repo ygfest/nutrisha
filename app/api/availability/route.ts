@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import {
+  PHILIPPINES_TIMEZONE,
+  getNowInManila,
+  isTodayInManila,
+} from "@/lib/timezone-utils";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const date = searchParams.get("date");
-    const timezone = searchParams.get("timezone") || "UTC";
+    const timezone = searchParams.get("timezone") || PHILIPPINES_TIMEZONE;
 
     if (!date) {
       return NextResponse.json(
@@ -32,6 +37,11 @@ export async function GET(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    console.log(
+      `Found ${bookings?.length || 0} existing bookings for ${date}:`,
+      bookings
+    );
 
     // Define all possible time slots
     const allTimeSlots = [
@@ -73,6 +83,8 @@ export async function GET(request: NextRequest) {
       return { start: startMinutes, end: endMinutes };
     });
 
+    console.log(`Booked time ranges:`, bookedRanges);
+
     // Check which time slots are available
     const availableSlots = allTimeSlots.filter((slot) => {
       const slotMinutes = timeToMinutes(slot);
@@ -88,20 +100,18 @@ export async function GET(request: NextRequest) {
       });
     });
 
-    // Check for past times if it's today (using user's timezone)
-    const nowInUserTz = new Date(
-      new Date().toLocaleString("en-US", { timeZone: timezone })
-    );
-    const requestDateInUserTz = new Date(date + "T00:00:00");
+    // Check for past times if it's today (using Philippines timezone)
+    const nowInManila = getNowInManila();
+    const isToday = isTodayInManila(date);
 
-    // Format dates for comparison (YYYY-MM-DD)
-    const todayStr = nowInUserTz.toISOString().split("T")[0];
-    const requestDateStr = date;
-    const isToday = requestDateStr === todayStr;
-
-    console.log(
-      `Date comparison (${timezone}) - Request date: ${requestDateStr}, Today: ${todayStr}, isToday: ${isToday}, Current time: ${nowInUserTz.toLocaleTimeString()}`
-    );
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `Date comparison (${timezone}) - Request date: ${date}, Today: ${nowInManila.toISOString().split("T")[0]}, isToday: ${isToday}, Current time: ${nowInManila.toLocaleTimeString()}`
+      );
+      console.log(
+        `Available slots before today filter: ${availableSlots.length}`
+      );
+    }
 
     let finalAvailableSlots = availableSlots;
 
@@ -109,20 +119,28 @@ export async function GET(request: NextRequest) {
       // Add a 30-minute buffer - don't allow booking slots that are within 30 minutes
       const bufferMinutes = 30;
       const currentMinutes =
-        nowInUserTz.getHours() * 60 + nowInUserTz.getMinutes() + bufferMinutes;
+        nowInManila.getHours() * 60 + nowInManila.getMinutes() + bufferMinutes;
 
       console.log(
-        `Today check - Current time in ${timezone}: ${nowInUserTz.getHours()}:${nowInUserTz.getMinutes().toString().padStart(2, "0")}, Current minutes with buffer: ${currentMinutes}`
+        `Today check - Current time in ${timezone}: ${nowInManila.getHours()}:${nowInManila.getMinutes().toString().padStart(2, "0")}, Current minutes with buffer: ${currentMinutes}`
       );
 
       finalAvailableSlots = availableSlots.filter((slot) => {
         const slotMinutes = timeToMinutes(slot);
         const isAvailable = slotMinutes > currentMinutes;
-        console.log(
-          `Slot ${slot} (${slotMinutes} minutes) - Available: ${isAvailable}`
-        );
+        if (process.env.NODE_ENV === "development") {
+          console.log(
+            `Slot ${slot} (${slotMinutes} minutes) - Available: ${isAvailable}`
+          );
+        }
         return isAvailable;
       });
+
+      if (process.env.NODE_ENV === "development") {
+        console.log(
+          `Final available slots after today filter: ${finalAvailableSlots.length}`
+        );
+      }
     }
 
     console.log(`Final available slots for ${date}:`, finalAvailableSlots);
