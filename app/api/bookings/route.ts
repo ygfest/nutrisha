@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { sendBookingConfirmationEmail } from "@/lib/email-service";
+import { sendBookingConfirmationEmail } from "@/actions/email";
 import {
   generateGoogleMeetLink,
   generateGoogleCalendarUrl,
   generateOutlookCalendarUrl,
-} from "@/lib/calendar-service";
+} from "@/actions/calendar";
 
 const appointmentTypeNames: Record<string, string> = {
   "initial-consultation": "Initial Consultation",
@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate Google Meet link and calendar URLs
-    const meetLink = generateGoogleMeetLink();
+    const meetLink = await generateGoogleMeetLink();
 
     const appointmentDetails = {
       clientName,
@@ -197,11 +197,11 @@ export async function POST(request: NextRequest) {
       clientEmail: email,
     };
 
-    const googleCalendarUrl = generateGoogleCalendarUrl(
+    const googleCalendarUrl = await generateGoogleCalendarUrl(
       appointmentDetails,
       meetLink
     );
-    const outlookCalendarUrl = generateOutlookCalendarUrl(
+    const outlookCalendarUrl = await generateOutlookCalendarUrl(
       appointmentDetails,
       meetLink
     );

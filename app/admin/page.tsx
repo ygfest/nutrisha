@@ -11,7 +11,11 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, TrendingDown, Calendar, Clock } from "lucide-react";
-import { DashboardService } from "@/lib/dashboard-service";
+import {
+  getDashboardStats,
+  getWeeklyStats,
+  getTodaysBookings,
+} from "@/actions/dashboard";
 import type { Booking } from "@/lib/types";
 
 export default function AdminPage() {
@@ -28,8 +32,8 @@ export default function AdminPage() {
     const fetchData = async () => {
       try {
         const [bookings, stats] = await Promise.all([
-          DashboardService.getTodaysBookings(),
-          DashboardService.getWeeklyStats(),
+          getTodaysBookings(),
+          getWeeklyStats(),
         ]);
         setTodaysBookings(bookings);
         setWeeklyStats(stats);

@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MessageSquare, Clock, ArrowRight } from "lucide-react";
-import { DashboardService } from "@/lib/dashboard-service";
+import { getRecentMessages } from "@/actions/dashboard";
 import type { Message } from "@/lib/types";
 
 const getTypeColor = (type: string) => {
@@ -68,7 +68,7 @@ export function RecentMessages() {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const data = await DashboardService.getRecentMessages(5);
+        const data = await getRecentMessages(5);
         setMessages(data);
       } catch (error) {
         console.error("Failed to fetch messages:", error);

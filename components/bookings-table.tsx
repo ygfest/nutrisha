@@ -28,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DashboardService } from "@/lib/dashboard-service";
+import { getRecentBookings } from "@/actions/dashboard";
 import type { Booking } from "@/lib/types";
 
 const getStatusColor = (status: string) => {
@@ -67,7 +67,7 @@ export function BookingsTable() {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const data = await DashboardService.getRecentBookings(20);
+        const data = await getRecentBookings(20);
         setBookings(data);
       } catch (error) {
         console.error("Failed to fetch bookings:", error);

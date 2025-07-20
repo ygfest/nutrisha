@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { generateChatResponse } from "@/lib/gemini";
 //import { generateChatResponse } from "@/lib/openai";
-import { ChatService } from "@/lib/chat-service";
+import { saveChatConversation } from "@/actions/chat";
 
 export async function POST(req: Request) {
   try {
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
 
     // Save the conversation to database with the actual client name
     try {
-      await ChatService.saveChatConversation(
+      await saveChatConversation(
         message,
         aiResponse.response,
         actualClientName

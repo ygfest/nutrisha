@@ -10,7 +10,7 @@ import {
   TrendingUp,
   Clock,
 } from "lucide-react";
-import { DashboardService } from "@/lib/dashboard-service";
+import { getDashboardStats } from "@/actions/dashboard";
 import type { DashboardStats } from "@/lib/types";
 
 interface StatItem {
@@ -28,7 +28,7 @@ export function DashboardStats() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const dashboardStats = await DashboardService.getDashboardStats();
+        const dashboardStats = await getDashboardStats();
         setStats(dashboardStats);
       } catch (error) {
         console.error("Failed to fetch dashboard stats:", error);

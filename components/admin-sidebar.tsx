@@ -1,7 +1,7 @@
 "use client";
 
 import type * as React from "react";
-import { logout } from "@/lib/auth-actions";
+import { logout } from "@/actions/auth";
 import {
   BarChart3,
   Calendar,

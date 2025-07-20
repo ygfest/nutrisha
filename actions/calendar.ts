@@ -1,3 +1,5 @@
+"use server";
+
 import { createEvent } from "ics";
 import { v4 as uuidv4 } from "uuid";
 
@@ -12,7 +14,7 @@ interface AppointmentDetails {
 }
 
 // Generate a Google Meet link (using predefined meeting code)
-export function generateGoogleMeetLink(): string {
+export async function generateGoogleMeetLink(): Promise<string> {
   return `https://meet.google.com/hdw-jxot-dma`;
 }
 
@@ -25,7 +27,7 @@ function parseDateTime(dateStr: string, timeStr: string): Date {
 }
 
 // Generate calendar event data
-export function generateCalendarEvent(
+export async function generateCalendarEvent(
   details: AppointmentDetails,
   meetLink: string
 ) {
@@ -90,7 +92,7 @@ export async function generateICSFile(
   details: AppointmentDetails,
   meetLink: string
 ): Promise<string> {
-  const event = generateCalendarEvent(details, meetLink);
+  const event = await generateCalendarEvent(details, meetLink);
 
   return new Promise((resolve, reject) => {
     createEvent(event, (error, value) => {
@@ -104,10 +106,10 @@ export async function generateICSFile(
 }
 
 // Generate Google Calendar quick-add URL
-export function generateGoogleCalendarUrl(
+export async function generateGoogleCalendarUrl(
   details: AppointmentDetails,
   meetLink: string
-): string {
+): Promise<string> {
   const startDate = parseDateTime(details.date, details.time);
   const endDate = new Date(startDate.getTime() + details.duration * 60000);
 
@@ -146,10 +148,10 @@ Preparation:
 }
 
 // Generate Outlook Calendar URL
-export function generateOutlookCalendarUrl(
+export async function generateOutlookCalendarUrl(
   details: AppointmentDetails,
   meetLink: string
-): string {
+): Promise<string> {
   const startDate = parseDateTime(details.date, details.time);
   const endDate = new Date(startDate.getTime() + details.duration * 60000);
 

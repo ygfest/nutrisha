@@ -1,9 +1,11 @@
+"use server";
+
 import nodemailer from "nodemailer";
 import {
   generateGoogleMeetLink,
   generateGoogleCalendarUrl,
   generateOutlookCalendarUrl,
-} from "./calendar-service";
+} from "./calendar";
 
 // Create transporter using Gmail SMTP
 const transporter = nodemailer.createTransport({
