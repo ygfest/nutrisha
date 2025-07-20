@@ -43,13 +43,6 @@ const paymentMethodNames: Record<string, string> = {
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.json();
-    if (process.env.NODE_ENV === "development") {
-      console.log("Received booking data:", {
-        selectedDate: formData.selectedDate,
-        selectedTime: formData.selectedTime,
-        appointmentType: formData.appointmentType,
-      });
-    }
 
     // Extract booking data
     const {

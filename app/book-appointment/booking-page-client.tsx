@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { AppointmentTypes } from "@/components/appointment-types";
 import { BookingCalendar } from "@/components/booking-calendar";
 import { BookingForm } from "@/components/booking-form";
@@ -8,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { useBookingMutation } from "@/hooks/use-booking-mutation";
 import { toast } from "@/hooks/use-toast";
 import { PHILIPPINES_TIMEZONE } from "@/lib/timezone-utils";
 import {
@@ -39,6 +39,24 @@ const appointmentTypeDurations: Record<string, number> = {
   "educational-session": 60,
 };
 
+// Booking mutation function
+const createBooking = async (bookingData: any) => {
+  const response = await fetch("/api/bookings", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(bookingData),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || "Failed to book appointment");
+  }
+
+  return response.json();
+};
+
 export function BookingPageClient() {
   const [currentStep, setCurrentStep] = useState<BookingStep>("type");
   const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -47,8 +65,37 @@ export function BookingPageClient() {
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
   const [bookingData, setBookingData] = useState<any>(null);
 
-  // TanStack Query mutation for booking
-  const bookingMutation = useBookingMutation();
+  // React Query mutation directly in component
+  const bookingMutation = useMutation({
+    mutationFn: createBooking,
+    onSuccess: (result) => {
+      setBookingData({
+        clientName: result.clientName,
+        bookingId: result.bookingId,
+        appointmentType: appointmentTypeNames[selectedType!],
+        selectedDate,
+        selectedTime,
+        duration: appointmentTypeDurations[selectedType!],
+        meetLink: result.meetLink,
+        googleCalendarUrl: result.googleCalendarUrl,
+        outlookCalendarUrl: result.outlookCalendarUrl,
+      });
+      setBookingConfirmed(true);
+      setCurrentStep("confirmation");
+      toast({
+        title: "Booking Confirmed!",
+        description: "Your appointment has been successfully booked.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Booking Failed",
+        description:
+          error.message || "Failed to book appointment. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   // Scroll to top when step changes
   useEffect(() => {
@@ -114,43 +161,12 @@ export function BookingPageClient() {
         })
       : undefined;
 
-    bookingMutation.mutate(
-      {
-        ...formData,
-        appointmentType: selectedType!,
-        selectedDate: manilaDate!,
-        selectedTime: selectedTime!,
-      },
-      {
-        onSuccess: (result) => {
-          setBookingData({
-            clientName: result.clientName,
-            bookingId: result.bookingId,
-            appointmentType: appointmentTypeNames[selectedType!],
-            selectedDate,
-            selectedTime,
-            duration: appointmentTypeDurations[selectedType!],
-            meetLink: result.meetLink,
-            googleCalendarUrl: result.googleCalendarUrl,
-            outlookCalendarUrl: result.outlookCalendarUrl,
-          });
-          setBookingConfirmed(true);
-          setCurrentStep("confirmation");
-          toast({
-            title: "Booking Confirmed!",
-            description: "Your appointment has been successfully booked.",
-          });
-        },
-        onError: (error) => {
-          toast({
-            title: "Booking Failed",
-            description:
-              error.message || "Failed to book appointment. Please try again.",
-            variant: "destructive",
-          });
-        },
-      }
-    );
+    bookingMutation.mutate({
+      ...formData,
+      appointmentType: selectedType!,
+      selectedDate: manilaDate!,
+      selectedTime: selectedTime!,
+    });
   };
 
   if (bookingConfirmed && currentStep === "confirmation" && bookingData) {
