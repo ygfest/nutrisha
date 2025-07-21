@@ -15,7 +15,6 @@ import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { getNotifications } from "@/actions/notifications";
 import { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
 
 function useNotificationsQuery() {
   return useQuery({
@@ -62,7 +61,7 @@ export function AdminHeader() {
                 <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs bg-red-500">
                   <span className="">
                     {isLoading ? (
-                      <Spinner animation="border" size="sm" />
+                      <span className="inline-block w-4 h-4 align-middle border-2 border-t-transparent border-white border-solid rounded-full animate-spin"></span>
                     ) : (
                       unreadCount
                     )}
@@ -72,8 +71,8 @@ export function AdminHeader() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-80">
               {isLoading ? (
-                <div className="d-flex justify-content-center align-items-center py-4">
-                  <Spinner animation="border" />
+                <div className="flex justify-center items-center py-4">
+                  <span className="inline-block w-6 h-6 border-2 border-t-transparent border-gray-400 border-solid rounded-full animate-spin"></span>
                 </div>
               ) : error ? (
                 <div className="text-center text-danger py-4">
