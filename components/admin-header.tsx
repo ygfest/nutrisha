@@ -12,8 +12,27 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
+import { useQuery } from "@tanstack/react-query";
+import { getNotifications } from "@/actions/notifications";
+import { useEffect, useState } from "react";
+import { Spinner } from "react-bootstrap";
+
+function useNotificationsQuery() {
+  return useQuery({
+    queryKey: ["notifications"],
+    queryFn: async () => {
+      // getNotifications is a server action, so we need to call it via fetch
+      const notifications = await getNotifications();
+      return notifications;
+    },
+    refetchInterval: 1000 * 60 * 2, // 2 minutes
+  });
+}
 
 export function AdminHeader() {
+  const { data: notifications, isLoading, error } = useNotificationsQuery();
+  const unreadCount = notifications?.filter((n: any) => !n.read)?.length ?? 0;
+
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-white">
       <SidebarTrigger className="-ml-1" />
@@ -41,35 +60,54 @@ export function AdminHeader() {
               <Button variant="ghost" size="sm" className="relative">
                 <Bell className="h-4 w-4" />
                 <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs bg-red-500">
-                  <span className="">3</span>
+                  <span className="">
+                    {isLoading ? (
+                      <Spinner animation="border" size="sm" />
+                    ) : (
+                      unreadCount
+                    )}
+                  </span>
                 </Badge>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-80">
-              <DropdownMenuItem>
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium">New booking request</p>
-                  <p className="text-xs text-muted-foreground">
-                    Sarah Johnson - 2:00 PM today
-                  </p>
+              {isLoading ? (
+                <div className="d-flex justify-content-center align-items-center py-4">
+                  <Spinner animation="border" />
                 </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium">AI Chat inquiry</p>
-                  <p className="text-xs text-muted-foreground">
-                    Question about meal planning
-                  </p>
+              ) : error ? (
+                <div className="text-center text-danger py-4">
+                  Failed to load notifications
                 </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium">Payment received</p>
-                  <p className="text-xs text-muted-foreground">
-                    Michael Chen - ₱2,500
-                  </p>
+              ) : notifications?.length === 0 ? (
+                <div className="text-center text-muted py-4">
+                  No notifications
                 </div>
-              </DropdownMenuItem>
+              ) : (
+                (notifications ?? []).map((notification: any) => (
+                  <DropdownMenuItem
+                    key={notification.id}
+                    className="d-flex flex-column align-items-start"
+                  >
+                    <div className="fw-medium">
+                      {notification.title ||
+                        notification.type ||
+                        "Notification"}
+                    </div>
+                    <div className="text-muted-foreground small">
+                      {notification.message ||
+                        notification.content ||
+                        notification.description ||
+                        "No details"}
+                    </div>
+                    <div className="text-muted-foreground small mt-1">
+                      {notification.created_at
+                        ? new Date(notification.created_at).toLocaleString()
+                        : ""}
+                    </div>
+                  </DropdownMenuItem>
+                ))
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

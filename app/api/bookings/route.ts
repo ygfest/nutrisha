@@ -207,6 +207,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Insert notification for new booking
+    try {
+      await supabase.from("notifications").insert({
+        type: "booking",
+        title: "New Booking",
+        message: `${clientName} booked an appointment for ${selectedTime} on ${bookingDate}`,
+        read: false,
+      });
+    } catch (notifError) {
+      console.error("Failed to insert booking notification:", notifError);
+    }
+
     if (process.env.NODE_ENV === "development") {
       console.log(
         `Booking created successfully: ID=${booking.id}, date=${bookingDate}, time=${selectedTime}`

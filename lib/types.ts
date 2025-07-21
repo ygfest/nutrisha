@@ -53,6 +53,17 @@ export interface Message {
   client?: Client;
 }
 
+export interface Notification {
+  id: string;
+  type: string;
+  title?: string | null;
+  message?: string | null;
+  data?: any;
+  read: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface DashboardStats {
   total_clients: number;
   monthly_bookings: number;
@@ -90,6 +101,11 @@ export interface Database {
         Row: Message;
         Insert: Omit<Message, "id" | "created_at">;
         Update: Partial<Omit<Message, "id" | "created_at">>;
+      };
+      notifications: {
+        Row: Notification;
+        Insert: Omit<Notification, "id" | "created_at" | "updated_at">;
+        Update: Partial<Omit<Notification, "id" | "created_at">>;
       };
     };
   };
