@@ -110,7 +110,7 @@ export function useAddClient() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       name,
       email,
       phone,
@@ -118,17 +118,22 @@ export function useAddClient() {
       name: string;
       email: string;
       phone: string;
-    }) =>
-      fetch("/api/clients/add", {
+    }) => {
+      const res = await fetch("/api/clients/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, phone }),
-      }).then((r) => {
-        if (!r.ok) throw new Error("Failed");
-        return r.json();
-      }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        throw new Error(json.error || "Failed to add client");
+      }
+      return json;
+    },
     onSuccess: () => {
-      toast({ description: "Client added successfully" });
+      toast({
+        description: "Client added successfully",
+      });
       queryClient.invalidateQueries({ queryKey: ["clients"] });
     },
   });

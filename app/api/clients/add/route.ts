@@ -12,19 +12,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Check if email already exists to avoid silent duplicates
+    const { data: existing } = await supabase
+      .from("clients")
+      .select("id")
+      .eq("email", email)
+      .single();
+
+    if (existing) {
+      return NextResponse.json(
+        { error: "A client with this email already exists." },
+        { status: 409 }
+      );
+    }
+
     const { data, error } = await supabase
       .from("clients")
-      .upsert({ name, email, phone }, { onConflict: "email" })
+      .insert({ name, email, phone })
       .select("id")
       .single();
 
     if (error) {
-      if (error.code === "23505") {
-        return NextResponse.json(
-          { error: "A client with this email already exists." },
-          { status: 409 }
-        );
-      }
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
