@@ -14,7 +14,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { getNotifications } from "@/actions/notifications";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 function useNotificationsQuery() {
   return useQuery({
@@ -29,6 +29,7 @@ function useNotificationsQuery() {
 }
 
 export function AdminHeader() {
+  const router = useRouter();
   const { data: notifications, isLoading, error } = useNotificationsQuery();
   const unreadCount = notifications?.filter((n: any) => !n.read)?.length ?? 0;
 
@@ -49,7 +50,10 @@ export function AdminHeader() {
         </div>
 
         <div className="flex items-center space-x-4">
-          <Button className="bg-gradient-to-r from-sage-500 to-sage-600 hover:from-sage-600 hover:to-sage-700">
+          <Button
+            className="bg-gradient-to-r from-sage-500 to-sage-600 hover:from-sage-600 hover:to-sage-700"
+            onClick={() => router.push("/book-appointment")}
+          >
             <Plus className="h-4 w-4 mr-2" />
             New Booking
           </Button>
