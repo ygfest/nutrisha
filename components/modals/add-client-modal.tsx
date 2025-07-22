@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface AddClientModalProps {
@@ -40,6 +40,7 @@ export default function AddClientModal({
         onSuccess: () => {
           // The hook already shows a toast and invalidates cache.
           // Handle modal-local side-effects here.
+          //toast({ title: "Client added successfully" });
           setName("");
           setEmail("");
           setPhone("");
@@ -127,6 +128,7 @@ export function useAddClient() {
         return r.json();
       }),
     onSuccess: () => {
+      toast({ description: "Client added successfully" });
       queryClient.invalidateQueries({ queryKey: ["clients"] });
     },
   });
