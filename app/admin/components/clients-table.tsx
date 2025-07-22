@@ -35,9 +35,10 @@ export function ClientsTable() {
         <CardContent>
           <div className="animate-pulse space-y-4">
             <div className="flex items-center space-x-48">
-              <div className="h-4 bg-gray-200 w-1/6"></div>
-              <div className="h-4 bg-gray-200 w-1/6"></div>
-              <div className="h-4 bg-gray-200 w-1/6"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/6"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/6"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/6"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/6"></div>
             </div>
 
             {Array.from({ length: 5 }).map((_, index) => (
