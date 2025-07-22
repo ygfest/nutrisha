@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +11,21 @@ import {
   FileText,
   Send,
 } from "lucide-react";
+
+import dynamic from "next/dynamic";
+
+const AddClientModal = dynamic(
+  () => import("@/components/modals/add-client-modal"),
+  { ssr: false }
+);
+
+type ActionKey =
+  | "create-booking"
+  | "add-client"
+  | "create-meal-plan"
+  | "send-newsletter"
+  | "generate-report"
+  | "review-chats";
 
 const quickActions = [
   {
@@ -57,6 +73,34 @@ const quickActions = [
 ];
 
 export function QuickActions() {
+  const [activeAction, setActiveAction] = useState<ActionKey | null>(null);
+
+  const handleClick = (action: ActionKey) => {
+    switch (action) {
+      case "add-client":
+        setActiveAction("add-client");
+        break;
+      // For other actions, navigate to pages for now
+      case "create-booking":
+        window.location.href = "/book-appointment";
+        break;
+      case "create-meal-plan":
+        window.location.href = "/admin/meal-plan";
+        break;
+      case "send-newsletter":
+        window.location.href = "/admin/newsletter";
+        break;
+      case "generate-report":
+        window.location.href = "/admin/reports";
+        break;
+      case "review-chats":
+        window.location.href = "/admin/chat/review";
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <Card className="border-sage-100">
       <CardHeader>
@@ -71,6 +115,7 @@ export function QuickActions() {
               key={action.action}
               variant="outline"
               className="h-auto p-4 flex flex-col items-start space-y-2 border-sage-200 hover:bg-sage-50 hover:border-sage-300 transition-all duration-200"
+              onClick={() => handleClick(action.action as ActionKey)}
             >
               <div className="flex items-center space-x-3 w-full">
                 <div className="h-10 w-10 rounded-lg bg-white border border-sage-200 flex items-center justify-center">
@@ -89,6 +134,11 @@ export function QuickActions() {
           ))}
         </div>
       </CardContent>
+      {/* Modals */}
+      <AddClientModal
+        open={activeAction === "add-client"}
+        onOpenChange={() => setActiveAction(null)}
+      />
     </Card>
   );
 }

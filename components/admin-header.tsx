@@ -58,7 +58,7 @@ export function AdminHeader() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="relative">
                 <Bell className="h-4 w-4" />
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs bg-red-500">
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs ">
                   <span className="">
                     {isLoading ? (
                       <span className="inline-block w-4 h-4 align-middle border-2 border-t-transparent border-white border-solid rounded-full animate-spin"></span>
