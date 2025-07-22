@@ -9,6 +9,7 @@ import { WeeklyStats } from "@/components/weekly-stats";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "lucide-react";
+import { ClientsTable } from "./components/clients-table";
 
 export default function AdminPage() {
   return (
@@ -65,6 +66,7 @@ export default function AdminPage() {
 
             {/* Recent Messages */}
             <RecentMessages />
+            <ClientsTable />
           </main>
         </SidebarInset>
       </SidebarProvider>
