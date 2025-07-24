@@ -1,7 +1,8 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { getClients } from "@/actions/clients";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getClients, deleteClient } from "@/actions/clients";
 import {
   Table,
   TableHead,
@@ -12,6 +13,8 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface Client {
   id: string;
@@ -21,9 +24,26 @@ interface Client {
 }
 
 export function ClientsTable() {
+  const queryClient = useQueryClient();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const { data, isLoading, error } = useQuery({
     queryKey: ["clients"],
     queryFn: () => getClients(),
+  });
+
+  const { mutate: deleteClientMutation, isPending } = useMutation({
+    mutationFn: (id: string) => deleteClient(id),
+    onMutate: (id: string) => {
+      setDeletingId(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
+      setDeletingId(null);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+      setDeletingId(null);
+    },
   });
 
   const TableSkeleton = () => {
@@ -67,6 +87,7 @@ export function ClientsTable() {
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -75,6 +96,16 @@ export function ClientsTable() {
                 <TableCell>{client.name}</TableCell>
                 <TableCell>{client.email}</TableCell>
                 <TableCell>{client.phone}</TableCell>
+                <TableCell>
+                  <Button
+                    className="bg-red-500"
+                    onClick={() => deleteClientMutation(client.id)}
+                  >
+                    {isPending && deletingId === client.id
+                      ? "Deleting..."
+                      : "Delete"}
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

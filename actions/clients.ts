@@ -9,3 +9,11 @@ export async function getClients() {
   }
   return data;
 }
+
+export async function deleteClient(id: string) {
+  const { data, error } = await supabase.from("clients").delete().eq("id", id);
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+}
