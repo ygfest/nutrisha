@@ -15,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 interface Client {
   id: string;
@@ -91,23 +92,41 @@ export function ClientsTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.map((client: Client) => (
-              <TableRow key={client.id}>
-                <TableCell>{client.name}</TableCell>
-                <TableCell>{client.email}</TableCell>
-                <TableCell>{client.phone}</TableCell>
-                <TableCell>
-                  <Button
-                    className="bg-red-500"
-                    onClick={() => deleteClientMutation(client.id)}
-                  >
-                    {isPending && deletingId === client.id
-                      ? "Deleting..."
-                      : "Delete"}
-                  </Button>
+            {data?.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={4}
+                  className="text-center text-muted-foreground"
+                >
+                  No clients found
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              data?.map((client: Client) => (
+                <TableRow key={client.id}>
+                  <TableCell>{client.name}</TableCell>
+                  <TableCell>{client.email}</TableCell>
+                  <TableCell>{client.phone}</TableCell>
+                  <TableCell>
+                    <Button
+                      className="bg-red-500"
+                      onClick={() => deleteClientMutation(client.id)}
+                    >
+                      {isPending && deletingId === client.id ? (
+                        <>
+                          <div className="animate-spin w-4 h-4 border-t-2 border-2">
+                            {" "}
+                          </div>
+                          <span className="sr-only">Deleting...</span>
+                        </>
+                      ) : (
+                        "Delete"
+                      )}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </CardContent>
