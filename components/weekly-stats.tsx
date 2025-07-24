@@ -10,10 +10,10 @@ export function WeeklyStats() {
     queryKey: ["weekly-stats"],
     queryFn: getWeeklyStats,
     staleTime: 1000 * 60 * 5,
-    refetchOnWindowFocus: false,
+    //refetchOnWindowFocus: false,
     refetchOnMount: false,
-    refetchOnReconnect: false,
-    retry: false,
+    //refetchOnReconnect: false,
+    //retry: false,
   });
 
   return (
