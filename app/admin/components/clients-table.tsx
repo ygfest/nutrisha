@@ -109,15 +109,14 @@ export function ClientsTable() {
                   <TableCell>{client.phone}</TableCell>
                   <TableCell>
                     <Button
-                      className="bg-red-500"
+                      className="bg-red-500 hover:bg-red-600"
                       onClick={() => deleteClientMutation(client.id)}
+                      disabled={isPending && deletingId === client.id}
                     >
                       {isPending && deletingId === client.id ? (
                         <>
-                          <div className="animate-spin w-4 h-4 border-t-2 border-2">
-                            {" "}
-                          </div>
-                          <span className="sr-only">Deleting...</span>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-sage-600 mr-2"></div>
+                          Deleting...
                         </>
                       ) : (
                         "Delete"
