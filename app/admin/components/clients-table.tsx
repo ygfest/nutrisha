@@ -38,7 +38,6 @@ export function ClientsTable() {
               <div className="h-4 bg-gray-200 rounded w-1/6"></div>
               <div className="h-4 bg-gray-200 rounded w-1/6"></div>
               <div className="h-4 bg-gray-200 rounded w-1/6"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/6"></div>
             </div>
 
             {Array.from({ length: 5 }).map((_, index) => (
