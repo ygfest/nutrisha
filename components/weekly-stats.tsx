@@ -16,6 +16,11 @@ export function WeeklyStats() {
     //retry: false,
   });
 
+  // Percentage change compared to last week (positive => up, negative => down)
+  const consultationsChangePercent =
+    weeklyStats?.consultationsChangePercent ?? 0;
+  const consultationsTrendUp = consultationsChangePercent >= 0;
+
   return (
     <Card className="border-sage-100">
       <CardHeader>
@@ -44,8 +49,17 @@ export function WeeklyStats() {
                 <span className="font-medium">
                   {weeklyStats?.consultations || 0}
                 </span>
-                <TrendingUp className="h-4 w-4 text-green-500" />
-                <span className="text-xs text-green-600">+15%</span>
+                {consultationsTrendUp ? (
+                  <TrendingUp className="h-4 w-4 text-green-500" />
+                ) : (
+                  <TrendingDown className="h-4 w-4 text-red-500" />
+                )}
+                <span
+                  className={`text-xs ${consultationsTrendUp ? "text-green-600" : "text-red-600"}`}
+                >
+                  {consultationsTrendUp ? "+" : ""}
+                  {Math.abs(consultationsChangePercent).toFixed(0)}%
+                </span>
               </div>
             </div>
             <div className="flex items-center justify-between">

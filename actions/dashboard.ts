@@ -205,23 +205,51 @@ export async function getTodaysBookings(): Promise<Booking[]> {
 
 export async function getWeeklyStats() {
   try {
+    // Current week timeframe (startOfWeek inclusive, endOfWeek exclusive)
     const startOfWeek = new Date();
     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(endOfWeek.getDate() + 7);
 
+    // Previous week timeframe
+    const startOfLastWeek = new Date(startOfWeek);
+    startOfLastWeek.setDate(startOfLastWeek.getDate() - 7);
+    const endOfLastWeek = new Date(startOfWeek);
+
+    // --- Consultations --- //
     const { count: consultations } = await supabase
       .from("bookings")
       .select("*", { count: "exact", head: true })
       .gte("created_at", startOfWeek.toISOString())
       .lt("created_at", endOfWeek.toISOString());
 
+    const { count: consultationsLastWeek } = await supabase
+      .from("bookings")
+      .select("*", { count: "exact", head: true })
+      .gte("created_at", startOfLastWeek.toISOString())
+      .lt("created_at", endOfLastWeek.toISOString());
+
+    // Calculate percentage change, guarding against division by zero.
+    let consultationsChangePercent = 0;
+    if (consultationsLastWeek && consultationsLastWeek > 0) {
+      consultationsChangePercent =
+        (((consultations || 0) - consultationsLastWeek) /
+          consultationsLastWeek) *
+        100;
+    } else if (consultations && consultations > 0) {
+      // Treat any consultations this week when none last week as 100% increase
+      consultationsChangePercent = 100;
+    }
+
+    // --- New clients --- //
     const { count: newClients } = await supabase
       .from("clients")
       .select("*", { count: "exact", head: true })
       .gte("created_at", startOfWeek.toISOString())
       .lt("created_at", endOfWeek.toISOString());
 
+    // --- AI interactions --- //
     const { count: aiInteractions } = await supabase
       .from("messages")
       .select("*", { count: "exact", head: true })
@@ -229,6 +257,7 @@ export async function getWeeklyStats() {
       .gte("created_at", startOfWeek.toISOString())
       .lt("created_at", endOfWeek.toISOString());
 
+    // --- Cancellations --- //
     const { count: cancellations } = await supabase
       .from("bookings")
       .select("*", { count: "exact", head: true })
@@ -238,6 +267,8 @@ export async function getWeeklyStats() {
 
     return {
       consultations: consultations || 0,
+      consultationsLastWeek: consultationsLastWeek || 0,
+      consultationsChangePercent,
       newClients: newClients || 0,
       aiInteractions: aiInteractions || 0,
       cancellations: cancellations || 0,
@@ -246,6 +277,8 @@ export async function getWeeklyStats() {
     console.error("Error fetching weekly stats:", error);
     return {
       consultations: 0,
+      consultationsLastWeek: 0,
+      consultationsChangePercent: 0,
       newClients: 0,
       aiInteractions: 0,
       cancellations: 0,
