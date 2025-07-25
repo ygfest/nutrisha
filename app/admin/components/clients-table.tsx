@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { UserX } from "lucide-react";
 
 interface Client {
   id: string;
@@ -82,52 +82,50 @@ export function ClientsTable() {
         <CardTitle>Clients</CardTitle>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data?.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={4}
-                  className="text-center text-muted-foreground"
-                >
-                  No clients found
-                </TableCell>
-              </TableRow>
-            ) : (
-              data?.map((client: Client) => (
-                <TableRow key={client.id}>
-                  <TableCell>{client.name}</TableCell>
-                  <TableCell>{client.email}</TableCell>
-                  <TableCell>{client.phone}</TableCell>
-                  <TableCell>
-                    <Button
-                      className="bg-red-500 hover:bg-red-600"
-                      onClick={() => deleteClientMutation(client.id)}
-                      disabled={isPending && deletingId === client.id}
-                    >
-                      {isPending && deletingId === client.id ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-sage-600 mr-2"></div>
-                          Deleting...
-                        </>
-                      ) : (
-                        "Delete"
-                      )}
-                    </Button>
-                  </TableCell>
+        {data?.length === 0 ? (
+          <div className="text-center py-8">
+            <UserX className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground">No clients found</p>
+          </div>
+        ) : (
+          <>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              </TableHeader>
+              <TableBody>
+                {data?.map((client: Client) => (
+                  <TableRow key={client.id}>
+                    <TableCell>{client.name}</TableCell>
+                    <TableCell>{client.email}</TableCell>
+                    <TableCell>{client.phone}</TableCell>
+                    <TableCell>
+                      <Button
+                        className="bg-red-500 hover:bg-red-600"
+                        onClick={() => deleteClientMutation(client.id)}
+                        disabled={isPending && deletingId === client.id}
+                      >
+                        {isPending && deletingId === client.id ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-sage-600 mr-2"></div>
+                            Deleting...
+                          </>
+                        ) : (
+                          "Delete"
+                        )}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </>
+        )}
       </CardContent>
     </Card>
   );
