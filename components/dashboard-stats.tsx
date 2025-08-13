@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Users,
@@ -13,6 +13,8 @@ import {
 import { getDashboardStats } from "@/actions/dashboard";
 import type { DashboardStats } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { useReactToPrint } from "react-to-print";
 
 interface StatItem {
   title: string;
@@ -23,6 +25,16 @@ interface StatItem {
 }
 
 export function DashboardStats() {
+  const componentRef = useRef<HTMLDivElement>(null);
+
+  const handlePrintPdf = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: "Nutrition Practice Dashboard",
+    onPrintError: (error) => {
+      console.error("Error printing PDF:", error);
+    },
+  });
+
   const {
     data: stats,
     isLoading,
@@ -141,35 +153,45 @@ export function DashboardStats() {
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {statItems.map((stat) => (
-        <Card
-          key={stat.title}
-          className="border-sage-100 hover:shadow-md transition-shadow"
-        >
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {stat.title}
-            </CardTitle>
-            <stat.icon className="h-4 w-4 text-sage-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-            <p className="text-xs text-sage-600 mt-1">
-              <span
-                className={
-                  stat.changeType === "positive"
-                    ? "text-green-600"
-                    : "text-red-600"
-                }
-              >
-                {stat.change}
-              </span>{" "}
-              from last month
-            </p>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
+    <>
+      <div className="flex justify-end mb-4">
+        <Button onClick={() => handlePrintPdf()}>Print PDF</Button>
+      </div>
+      <div
+        ref={componentRef}
+        className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+      >
+        {statItems.map((stat) => (
+          <Card
+            key={stat.title}
+            className="border-sage-100 hover:shadow-md transition-shadow"
+          >
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                {stat.title}
+              </CardTitle>
+              <stat.icon className="h-4 w-4 text-sage-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-gray-900">
+                {stat.value}
+              </div>
+              <p className="text-xs text-sage-600 mt-1">
+                <span
+                  className={
+                    stat.changeType === "positive"
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }
+                >
+                  {stat.change}
+                </span>{" "}
+                from last month
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </>
   );
 }
