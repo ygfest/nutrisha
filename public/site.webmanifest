@@ -12,7 +12,7 @@
   "categories": ["health", "nutrition", "lifestyle", "medical"],
   "icons": [
     {
-      "src": "/logo.svg",
+      "src": "/logo.png",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
