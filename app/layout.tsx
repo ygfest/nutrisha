@@ -3,6 +3,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "@/components/providers";
 import { SEOAnalytics } from "@/components/seo-analytics";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: {
@@ -230,6 +231,7 @@ export default function RootLayout({
           googleAnalyticsId={process.env.NEXT_PUBLIC_GA_ID}
           googleTagManagerId={process.env.NEXT_PUBLIC_GTM_ID}
         />
+        <Analytics/>
         <Providers>
           {children}
           <Toaster />
