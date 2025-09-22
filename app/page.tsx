@@ -304,23 +304,20 @@ export default function HomePage() {
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
               <div className="max-w-5xl mx-auto text-center animate-fade-in">
-                <Badge className="mb-8 bg-gradient-to-r from-sage-100 to-sage-200 text-sage-800 hover:from-sage-200 hover:to-sage-300 border-sage-300 px-6 py-2 text-sm font-medium">
-                  {/* <Sparkles className="h-4 w-4 mr-2" /> */}
+                <Badge className="mb-8 bg-white/60 backdrop-blur-md text-sage-700 border border-sage-200/50 hover:bg-white/80 hover:border-sage-300/60 shadow-lg shadow-sage-500/10 px-8 py-3 text-sm font-semibold tracking-wide transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-sage-500/20">
                   Professional Nutritionist & Dietitian
                 </Badge>
 
-                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-8 leading-tight">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light text-slate-900 mb-6 leading-[1.1] tracking-tight">
                   Transform Your Health with
-                  <span className="block bg-gradient-to-r from-sage-600 via-sage-500 to-sage-700 bg-clip-text text-transparent">
+                  <span className="block font-medium bg-gradient-to-r from-sage-600 via-sage-500 to-sage-700 bg-clip-text text-transparent">
                     Evidence-Based Nutrition
                   </span>
                 </h1>
 
-                <p className="text-xl sm:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-                  Fresh perspective from a newly licensed Registered
-                  Nutritionist-Dietitian, combining cutting-edge nutritional
-                  science with personalized care to help you achieve your
-                  wellness goals.
+                <p className="text-lg sm:text-xl text-slate-600 mb-12 max-w-2xl mx-auto leading-relaxed font-light">
+                  Expert nutritional guidance combining clinical expertise with
+                  personalized care to help you achieve sustainable wellness goals.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
