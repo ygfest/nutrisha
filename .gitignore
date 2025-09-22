@@ -28,3 +28,5 @@ next-env.d.ts
 /lib/generated/prisma
 
 settings.local.json
+.playwright-mcp
+
