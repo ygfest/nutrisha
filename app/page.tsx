@@ -189,10 +189,10 @@ export default function HomePage() {
                   <Apple className="h-7 w-7 text-white" />
                 </div>
                 <div>
-                  <span className="text-2xl font-bold bg-gradient-to-r from-sage-700 to-sage-500 bg-clip-text text-transparent">
-                    Krisha Nobora, RND
+                  <span className="text-2xl font-light bg-gradient-to-r from-sage-700 to-sage-500 bg-clip-text text-transparent tracking-tight">
+                    Krisha Nobora, <span className="font-medium">RND</span>
                   </span>
-                  <p className="text-xs text-sage-600 font-medium">
+                  <p className="text-xs text-slate-600 font-light tracking-wide">
                     Registered Nutritionist-Dietitian
                   </p>
                 </div>
@@ -202,28 +202,28 @@ export default function HomePage() {
               <nav className="hidden md:flex items-center space-x-8">
                 <a
                   href="#home"
-                  className="text-gray-700 hover:text-sage-600 transition-all duration-200 font-medium relative group"
+                  className="text-slate-700 hover:text-sage-600 transition-all duration-200 font-light relative group tracking-tight"
                 >
                   Home
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-sage-500 transition-all duration-200 group-hover:w-full"></span>
                 </a>
                 <a
                   href="#services"
-                  className="text-gray-700 hover:text-sage-600 transition-all duration-200 font-medium relative group"
+                  className="text-slate-700 hover:text-sage-600 transition-all duration-200 font-light relative group tracking-tight"
                 >
                   Services
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-sage-500 transition-all duration-200 group-hover:w-full"></span>
                 </a>
                 <a
                   href="#about"
-                  className="text-gray-700 hover:text-sage-600 transition-all duration-200 font-medium relative group"
+                  className="text-slate-700 hover:text-sage-600 transition-all duration-200 font-light relative group tracking-tight"
                 >
                   About
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-sage-500 transition-all duration-200 group-hover:w-full"></span>
                 </a>
                 <a
                   href="#contact"
-                  className="text-gray-700 hover:text-sage-600 transition-all duration-200 font-medium relative group"
+                  className="text-slate-700 hover:text-sage-600 transition-all duration-200 font-light relative group tracking-tight"
                 >
                   Contact
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-sage-500 transition-all duration-200 group-hover:w-full"></span>
@@ -258,25 +258,25 @@ export default function HomePage() {
                 <nav className="flex flex-col space-y-4">
                   <a
                     href="#home"
-                    className="text-gray-700 hover:text-sage-600 transition-colors font-medium py-2"
+                    className="text-slate-700 hover:text-sage-600 transition-colors font-light py-2 tracking-tight"
                   >
                     Home
                   </a>
                   <a
                     href="#services"
-                    className="text-gray-700 hover:text-sage-600 transition-colors font-medium py-2"
+                    className="text-slate-700 hover:text-sage-600 transition-colors font-light py-2 tracking-tight"
                   >
                     Services
                   </a>
                   <a
                     href="#about"
-                    className="text-gray-700 hover:text-sage-600 transition-colors font-medium py-2"
+                    className="text-slate-700 hover:text-sage-600 transition-colors font-light py-2 tracking-tight"
                   >
                     About
                   </a>
                   <a
                     href="#contact"
-                    className="text-gray-700 hover:text-sage-600 transition-colors font-medium py-2"
+                    className="text-slate-700 hover:text-sage-600 transition-colors font-light py-2 tracking-tight"
                   >
                     Contact
                   </a>
@@ -368,15 +368,14 @@ export default function HomePage() {
           <section id="services" className="py-24 bg-white relative">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-20">
-                <Badge className="mb-6 bg-sage-100 text-sage-800 px-4 py-2">
+                <Badge className="mb-8 bg-white/60 backdrop-blur-md text-slate-700 border border-slate-200/50 hover:bg-white/80 hover:border-slate-300/60 shadow-lg shadow-slate-500/10 px-6 py-2.5 text-xs font-medium uppercase tracking-[0.5px] transition-all duration-300">
                   Services
                 </Badge>
-                <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-                  Comprehensive Nutrition Services
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light text-slate-900 mb-6 leading-[1.1] tracking-tight">
+                  <span className="font-medium">Comprehensive</span> Nutrition Services
                 </h2>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                  Tailored solutions designed to meet your unique health and
-                  wellness needs with evidence-based approaches
+                <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-light">
+                  Expert solutions designed to meet your unique wellness needs with evidence-based approaches
                 </p>
               </div>
 
@@ -390,10 +389,10 @@ export default function HomePage() {
                       <div className="mx-auto mb-6 h-20 w-20 bg-gradient-to-br from-sage-400 via-sage-500 to-sage-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
                         <service.icon className="h-10 w-10 text-white" />
                       </div>
-                      <CardTitle className="text-xl font-bold text-gray-900 group-hover:text-sage-600 transition-colors mb-3">
+                      <CardTitle className="text-lg font-medium text-slate-900 group-hover:text-sage-600 transition-colors mb-3 tracking-tight">
                         {service.title}
                       </CardTitle>
-                      <CardDescription className="text-gray-600 leading-relaxed mb-4">
+                      <CardDescription className="text-slate-600 leading-relaxed mb-4 font-light">
                         {service.description}
                       </CardDescription>
                     </CardHeader>
@@ -402,7 +401,7 @@ export default function HomePage() {
                         {service.features.map((feature, idx) => (
                           <li
                             key={idx}
-                            className="flex items-center text-sm text-gray-600"
+                            className="flex items-center text-sm text-slate-600 font-light"
                           >
                             <CheckCircle className="h-4 w-4 text-sage-500 mr-2 flex-shrink-0" />
                             {feature}
@@ -427,27 +426,21 @@ export default function HomePage() {
               <div className="max-w-6xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                   <div className="text-center lg:text-left">
-                    <Badge className="mb-6 bg-sage-100 text-sage-800 px-4 py-2">
+                    <Badge className="mb-8 bg-white/60 backdrop-blur-md text-slate-700 border border-slate-200/50 hover:bg-white/80 hover:border-slate-300/60 shadow-lg shadow-slate-500/10 px-6 py-2.5 text-xs font-medium uppercase tracking-[0.5px] transition-all duration-300">
                       About Krisha
                     </Badge>
-                    <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-8">
-                      Meet Your Nutrition Expert
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light text-slate-900 mb-8 leading-[1.1] tracking-tight">
+                      Meet Your <span className="font-medium">Nutrition Expert</span>
                     </h2>
-                    <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+                    <p className="text-lg text-slate-600 mb-6 leading-relaxed font-light">
                       As a newly licensed Registered Nutritionist-Dietitian from
                       the University of Santo Tomas, I bring fresh enthusiasm
-                      and the latest evidence-based approaches to nutrition and
-                      wellness. Currently working as a Therapeutic Dietitian at
-                      St. Luke's Medical Center, I'm passionate about helping
-                      individuals achieve their health goals through
-                      personalized, science-backed nutrition strategies.
+                      and evidence-based approaches to nutrition and wellness.
                     </p>
-                    <p className="text-lg text-gray-600 mb-10 leading-relaxed">
-                      My educational background and clinical training have
-                      equipped me with a solid foundation in nutrition science,
-                      and I'm committed to continuous learning to provide the
-                      most current and effective nutrition guidance to my
-                      clients.
+                    <p className="text-lg text-slate-600 mb-10 leading-relaxed font-light">
+                      Currently working as a Therapeutic Dietitian at St. Luke's Medical Center,
+                      I'm passionate about helping individuals achieve their health goals through
+                      personalized, science-backed nutrition strategies.
                     </p>
 
                     <div className="space-y-6 mb-10">
@@ -462,10 +455,10 @@ export default function HomePage() {
                             </div>
                           </div>
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-1">
+                            <h4 className="font-medium text-slate-900 mb-1 tracking-tight">
                               {achievement.text}
                             </h4>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-slate-600 font-light">
                               {achievement.detail}
                             </p>
                           </div>
@@ -514,16 +507,16 @@ export default function HomePage() {
           >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-20">
-                <Badge className="mb-6 bg-sage-100 text-sage-800 px-4 py-2">
+                <Badge className="mb-8 bg-white/60 backdrop-blur-md text-slate-700 border border-slate-200/50 hover:bg-white/80 hover:border-slate-300/60 shadow-lg shadow-slate-500/10 px-6 py-2.5 text-xs font-medium uppercase tracking-[0.5px] transition-all duration-300">
                   Testimonials
                 </Badge>
                 <h2
                   id="testimonials-heading"
-                  className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6"
+                  className="text-3xl sm:text-4xl lg:text-5xl font-light text-slate-900 mb-6 leading-[1.1] tracking-tight"
                 >
-                  What Our Clients Say
+                  What Our <span className="font-medium">Clients Say</span>
                 </h2>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-light">
                   Real stories from real people who transformed their lives
                 </p>
               </div>
@@ -543,14 +536,14 @@ export default function HomePage() {
                           />
                         ))}
                       </div>
-                      <p className="text-gray-600 mb-6 leading-relaxed italic">
+                      <p className="text-slate-600 mb-6 leading-relaxed italic font-light">
                         "{testimonial.content}"
                       </p>
                       <div>
-                        <h4 className="font-semibold text-gray-900">
+                        <h4 className="font-medium text-slate-900 tracking-tight">
                           {testimonial.name}
                         </h4>
-                        <p className="text-sm text-sage-600">
+                        <p className="text-sm text-slate-600 font-light">
                           {testimonial.role}
                         </p>
                       </div>
@@ -570,17 +563,15 @@ export default function HomePage() {
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
               <div className="max-w-4xl mx-auto text-center">
-                <Badge className="mb-8 bg-sage-100 text-sage-800 px-4 py-2">
+                <Badge className="mb-8 bg-white/60 backdrop-blur-md text-slate-700 border border-slate-200/50 hover:bg-white/80 hover:border-slate-300/60 shadow-lg shadow-slate-500/10 px-6 py-2.5 text-xs font-medium uppercase tracking-[0.5px] transition-all duration-300">
                   Get Started
                 </Badge>
-                <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-8">
-                  Ready to Start Your Wellness Journey?
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light text-slate-900 mb-8 leading-[1.1] tracking-tight">
+                  Ready to Start Your <span className="font-medium">Wellness Journey?</span>
                 </h2>
-                <p className="text-xl text-gray-600 mb-12 leading-relaxed">
+                <p className="text-lg text-slate-600 mb-12 leading-relaxed font-light max-w-2xl mx-auto">
                   Take the first step towards a healthier, happier you. Connect
-                  with a fresh, evidence-based approach to nutrition. Let's work
-                  together to achieve your wellness goals with personalized,
-                  science-backed strategies.
+                  with evidence-based nutrition guidance tailored to your goals.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
@@ -604,22 +595,22 @@ export default function HomePage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <div className="flex flex-col items-center p-6 bg-white rounded-2xl shadow-sm border border-sage-100">
                     <Phone className="h-8 w-8 text-sage-500 mb-4" />
-                    <h3 className="font-semibold text-gray-900 mb-2">Phone</h3>
-                    <p className="text-gray-600">Available upon booking</p>
+                    <h3 className="font-medium text-slate-900 mb-2 tracking-tight">Phone</h3>
+                    <p className="text-slate-600 font-light">Available upon booking</p>
                   </div>
                   <div className="flex flex-col items-center p-6 bg-white rounded-2xl shadow-sm border border-sage-100">
                     <Mail className="h-8 w-8 text-sage-500 mb-4" />
-                    <h3 className="font-semibold text-gray-900 mb-2">Email</h3>
-                    <p className="text-gray-600">
+                    <h3 className="font-medium text-slate-900 mb-2 tracking-tight">Email</h3>
+                    <p className="text-slate-600 font-light">
                       missnutrition.krisha@gmail.com
                     </p>
                   </div>
                   <div className="flex flex-col items-center p-6 bg-white rounded-2xl shadow-sm border border-sage-100">
                     <MapPin className="h-8 w-8 text-sage-500 mb-4" />
-                    <h3 className="font-semibold text-gray-900 mb-2">
+                    <h3 className="font-medium text-slate-900 mb-2 tracking-tight">
                       Location
                     </h3>
-                    <p className="text-gray-600">
+                    <p className="text-slate-600 font-light">
                       Taguig, Metro Manila, Philippines
                     </p>
                   </div>
@@ -630,48 +621,48 @@ export default function HomePage() {
         </main>
 
         {/* Enhanced Footer */}
-        <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-16">
+        <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <div className="flex items-center justify-center space-x-3 mb-6">
+              <div className="flex items-center justify-center space-x-4 mb-8">
                 <div className="h-12 w-12 bg-gradient-to-br from-sage-400 via-sage-500 to-sage-600 rounded-2xl flex items-center justify-center shadow-lg">
                   <Apple className="h-7 w-7 text-white" />
                 </div>
                 <div>
-                  <span className="text-2xl font-bold">Krisha Nobora, RND</span>
-                  <p className="text-sm text-gray-400">
+                  <span className="text-2xl font-light tracking-tight">Krisha Nobora, <span className="font-medium">RND</span></span>
+                  <p className="text-sm text-slate-400 font-light tracking-wide">
                     Registered Nutritionist-Dietitian
                   </p>
                 </div>
               </div>
-              <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
+              <p className="text-gray-400 mb-6 max-w-2xl mx-auto font-light leading-relaxed">
                 Empowering healthier lives through evidence-based nutrition,
                 personalized guidance, and compassionate care.
               </p>
-              <div className="flex justify-center space-x-6 mb-8">
+              <div className="flex justify-center space-x-8 mb-8">
                 <Link
                   href="/privacy-policy"
-                  className="relative group text-gray-400 hover:text-white"
+                  className="relative group text-slate-400 hover:text-white font-light tracking-tight transition-all duration-300"
                 >
                   Privacy Policy
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-200 group-hover:w-full"></span>
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-sage-400 transition-all duration-200 group-hover:w-full"></span>
                 </Link>
                 <Link
                   href="/terms-of-service"
-                  className="relative group text-gray-400 hover:text-white"
+                  className="relative group text-slate-400 hover:text-white font-light tracking-tight transition-all duration-300"
                 >
                   Terms of Service
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-200 group-hover:w-full"></span>
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-sage-400 transition-all duration-200 group-hover:w-full"></span>
                 </Link>
                 <Link
                   href="/contact"
-                  className="relative group text-gray-400 hover:text-white"
+                  className="relative group text-slate-400 hover:text-white font-light tracking-tight transition-all duration-300"
                 >
                   Contact
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-200 group-hover:w-full"></span>
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-sage-400 transition-all duration-200 group-hover:w-full"></span>
                 </Link>
               </div>
-              <p className="text-gray-500 text-sm">
+              <p className="text-slate-500 text-sm font-light tracking-wide">
                 © 2025 Krisha Nobora, RND. All rights reserved.
               </p>
             </div>
