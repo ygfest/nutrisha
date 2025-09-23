@@ -11,14 +11,14 @@ import {
   bookingSteps,
   type BookingStep,
 } from "@/lib/booking-constants";
-import BookingHeaderSection from "./components/BookingHeaderSection";
-import AppointmentTypeSection from "./components/AppointmentTypeSection";
-import DateTimeSection from "./components/DateTimeSection";
-import BookingFormSection from "./components/BookingFormSection";
-import BookingConfirmationSection from "./components/BookingConfirmationSection";
-import BookingNavigationSection from "./components/BookingNavigationSection";
+import BookingHeaderSection from "./BookingHeaderSection";
+import AppointmentTypeSection from "./AppointmentTypeSection";
+import DateTimeSection from "./DateTimeSection";
+import BookingFormSection from "./BookingFormSection";
+import BookingConfirmationSection from "./BookingConfirmationSection";
+import BookingNavigationSection from "./BookingNavigationSection";
 
-export function BookingPageClient() {
+export default function BookingFlow() {
   const [currentStep, setCurrentStep] = useState<BookingStep>("type");
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);

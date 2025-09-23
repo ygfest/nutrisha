@@ -4,7 +4,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { BookingPageClient } from "./booking-page-client";
+import BookingFlow from "./components/BookingFlow";
 import BookingPageSkeleton from "./components/BookingPageSkeleton";
 import { getAppointmentTypes } from "@/actions/booking-data";
 
@@ -21,7 +21,7 @@ export default async function BookAppointmentPage() {
     <div className="min-h-screen bg-gradient-to-br from-sage-50/30 to-white">
       <Suspense fallback={<BookingPageSkeleton />}>
         <HydrationBoundary state={dehydrate(queryClient)}>
-          <BookingPageClient />
+          <BookingFlow />
         </HydrationBoundary>
       </Suspense>
     </div>
