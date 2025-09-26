@@ -59,6 +59,14 @@ export function BookingFlow() {
     bookingMutation.mutate(bookingRequest);
   };
 
+  const handleStepClick = (stepId: string) => {
+    // Only allow navigation to completed steps (going backwards)
+    const stepIndex = steps.findIndex(step => step.id === stepId);
+    if (stepIndex < currentStepIndex) {
+      setCurrentStep(stepId as any);
+    }
+  };
+
   if (bookingState.bookingConfirmed && bookingState.currentStep === "confirmation" && bookingState.bookingData) {
     return <BookingSuccessContent bookingData={bookingState.bookingData} />;
   }
@@ -69,6 +77,7 @@ export function BookingFlow() {
         steps={steps}
         currentStepIndex={currentStepIndex}
         progress={progress}
+        onStepClick={handleStepClick}
       />
 
       <main className="container mx-auto px-4 py-8">
