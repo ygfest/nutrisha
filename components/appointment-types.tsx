@@ -162,7 +162,7 @@ export function AppointmentTypes({
             >
               {type.popular && (
                 <Badge className="absolute -top-2 left-4 bg-gradient-to-r from-sage-500 to-sage-600 text-white">
-                  Most Popular
+                  Recommended
                 </Badge>
               )}
 
