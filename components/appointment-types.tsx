@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -153,7 +153,7 @@ export function AppointmentTypes({
           return (
             <Card
               key={type.id}
-              className={`relative cursor-pointer transition-all duration-300 hover:shadow-lg ${
+              className={`relative flex flex-col justify-between cursor-pointer transition-all duration-300 hover:shadow-lg ${
                 isSelected
                   ? "ring-2 ring-sage-500 border-sage-200 shadow-lg"
                   : "border-sage-100 hover:border-sage-200"
@@ -217,7 +217,8 @@ export function AppointmentTypes({
                     ))}
                   </ul>
                 </div>
-
+              </CardContent>
+                <CardFooter>
                 <Button
                   className={`w-full mt-4 transition-all duration-200 ${
                     isSelected
@@ -231,7 +232,7 @@ export function AppointmentTypes({
                 >
                   {isSelected ? "Selected" : "Select This Service"}
                 </Button>
-              </CardContent>
+              </CardFooter>
             </Card>
           );
         })}
