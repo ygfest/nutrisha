@@ -12,7 +12,7 @@ import { BookingFormData, BookingRequest } from "@/types/booking";
 
 export function BookingFlow() {
   const {
-    bookingState
+    bookingState,
     steps,
     currentStepIndex,
     progress,
