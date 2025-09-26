@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Clock, CheckCircle } from "lucide-react";
+import { Clock, CheckCircle, Calendar as CalendarIcon, MapPin } from "lucide-react";
 import { useAvailabilityQuery } from "@/hooks/use-availability-query";
 import { getNowInManila, isTodayInManila } from "@/lib/timezone-utils";
 
@@ -14,23 +14,13 @@ interface BookingCalendarProps {
   onTimeSelect: (time: string) => void;
 }
 
-// All possible time slots - used for display order
-const allTimeSlots = [
-  "9:00 AM",
-  "9:30 AM",
-  "10:00 AM",
-  "10:30 AM",
-  "11:00 AM",
-  "11:30 AM",
-  "1:00 PM",
-  "1:30 PM",
-  "2:00 PM",
-  "2:30 PM",
-  "3:00 PM",
-  "3:30 PM",
-  "4:00 PM",
-  "4:30 PM",
-];
+// Time slots organized by time periods
+const timeSlots = {
+  morning: ["9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM"],
+  afternoon: ["1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM", "3:00 PM", "3:30 PM", "4:00 PM", "4:30 PM"],
+};
+
+const allTimeSlots = [...timeSlots.morning, ...timeSlots.afternoon];
 
 export function BookingCalendar({
   selectedDate,
@@ -38,9 +28,6 @@ export function BookingCalendar({
   selectedTime,
   onTimeSelect,
 }: BookingCalendarProps) {
-  // Get availability data using TanStack Query
-  // Note: All times are handled in Philippines timezone (Asia/Manila)
-  // Format date as YYYY-MM-DD for API consistency
   const dateStr = selectedDate
     ? `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(2, "0")}`
     : undefined;
@@ -55,174 +42,249 @@ export function BookingCalendar({
   const isDateDisabled = (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
-    // Disable past dates and Sundays
     return date < today || date.getDay() === 0;
   };
 
   const isTimeAvailable = (time: string) => {
     if (!selectedDate) return false;
-    // The backend already handles all availability logic including timezone
-    // We just need to check if the slot is in the available list
     return availableSlots.includes(time);
   };
 
+  const getAvailableSlotsForPeriod = (period: 'morning' | 'afternoon') => {
+    return timeSlots[period].filter(time => isTimeAvailable(time));
+  };
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Calendar */}
-      <Card className="border-sage-100">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-gray-900">
-            Select Date
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={onDateSelect}
-            disabled={isDateDisabled}
-            className="rounded-md border border-sage-200"
-            classNames={{
-              months:
-                "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
-              month: "space-y-4",
-              caption: "flex justify-center pt-1 relative items-center",
-              caption_label: "text-sm font-medium",
-              nav: "space-x-1 flex items-center",
-              nav_button:
-                "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100",
-              nav_button_previous: "absolute left-1",
-              nav_button_next: "absolute right-1",
-              table: "w-full border-collapse space-y-1",
-              head_row: "flex",
-              head_cell:
-                "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
-              row: "flex w-full mt-2",
-              cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-sage-100 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-              day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-sage-50 rounded-md",
-              day_selected:
-                "bg-sage-500 text-white hover:bg-sage-600 focus:bg-sage-600",
-              day_today: "bg-sage-100 text-sage-900",
-              day_outside: "text-muted-foreground opacity-50",
-              day_disabled:
-                "text-muted-foreground opacity-50 cursor-not-allowed",
-              day_range_middle:
-                "aria-selected:bg-sage-100 aria-selected:text-sage-900",
-              day_hidden: "invisible",
-            }}
-          />
-          <div className="mt-4 space-y-2">
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <div className="w-3 h-3 bg-sage-500 rounded-full"></div>
-              <span>Selected</span>
-            </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <div className="w-3 h-3 bg-sage-100 rounded-full"></div>
-              <span>Today</span>
-            </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-400">
-              <div className="w-3 h-3 bg-gray-200 rounded-full"></div>
-              <span>Unavailable</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="space-y-8">
+      {/* Enhanced Header */}
+      <div className="text-center space-y-2">
+        <div className="inline-flex items-center px-4 py-2 bg-sage-50 rounded-full">
+          <CalendarIcon className="h-4 w-4 text-sage-600 mr-2" />
+          <span className="text-sage-700 font-medium text-sm">Step 2 of 4</span>
+        </div>
+        <h2 className="text-2xl font-bold text-gray-900">Choose Your Date & Time</h2>
+        <p className="text-gray-600">Select your preferred appointment date and time slot</p>
+      </div>
 
-      {/* Time Slots */}
-      <Card className="border-sage-100">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
-            <Clock className="h-5 w-5 text-sage-600" />
-            <span>Available Times</span>
-          </CardTitle>
-          {selectedDate && (
-            <p className="text-sm text-gray-600">
-              {selectedDate.toLocaleDateString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
-          )}
-        </CardHeader>
-        <CardContent>
-          {!selectedDate ? (
-            <div className="text-center py-8">
-              <Clock className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500">
-                Please select a date to view available times
-              </p>
-            </div>
-          ) : loading ? (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sage-600 mx-auto mb-4"></div>
-              <p className="text-gray-500">Loading available times...</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-3">
-              {allTimeSlots.map((time: string) => {
-                const isAvailable = isTimeAvailable(time);
-                const isSelected = selectedTime === time;
-
-                return (
-                  <Button
-                    key={time}
-                    variant={isSelected ? "default" : "outline"}
-                    className={`h-12 text-sm transition-all duration-200 ${
-                      isSelected
-                        ? "bg-sage-500 hover:bg-sage-600 text-white"
-                        : isAvailable
-                          ? "border-sage-200 hover:bg-sage-50 hover:border-sage-300"
-                          : "opacity-50 cursor-not-allowed border-gray-200 text-gray-400"
-                    }`}
-                    onClick={() => isAvailable && onTimeSelect(time)}
-                    disabled={!isAvailable}
-                  >
-                    {isSelected && <CheckCircle className="h-4 w-4 mr-2" />}
-                    {time}
-                  </Button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Error state */}
-          {selectedDate && error && (
-            <div className="text-center py-6 bg-red-50 rounded-lg mt-4">
-              <p className="text-red-600 font-medium">
-                Failed to load availability
-              </p>
-              <p className="text-red-500 text-sm">
-                Please try selecting the date again
-              </p>
-            </div>
-          )}
-
-          {/* No available times */}
-          {selectedDate &&
-            !loading &&
-            !error &&
-            availableSlots.length === 0 && (
-              <div className="text-center py-6 bg-red-50 rounded-lg mt-4">
-                <p className="text-red-600 font-medium">No available times</p>
-                <p className="text-red-500 text-sm">
-                  Please select a different date
-                </p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Enhanced Calendar */}
+        <div className="lg:col-span-1">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-sage-25">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                <div className="w-10 h-10 bg-sage-100 rounded-xl flex items-center justify-center mr-3">
+                  <CalendarIcon className="h-5 w-5 text-sage-600" />
+                </div>
+                Select Date
+              </CardTitle>
+              <p className="text-gray-600 ml-13">Choose from available dates</p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-sage-100">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={onDateSelect}
+                  disabled={isDateDisabled}
+                  className="w-full"
+                  classNames={{
+                    months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-full",
+                    month: "space-y-4 w-full flex flex-col",
+                    caption: "flex justify-center pt-1 relative items-center mb-4",
+                    caption_label: "text-lg font-semibold text-gray-900",
+                    nav: "space-x-1 flex items-center",
+                    nav_button: "h-9 w-9 bg-sage-50 hover:bg-sage-100 rounded-xl p-0 transition-colors duration-200 flex items-center justify-center",
+                    nav_button_previous: "absolute left-1",
+                    nav_button_next: "absolute right-1",
+                    table: "w-full border-collapse",
+                    head_row: "flex w-full",
+                    head_cell: "text-sage-600 rounded-md w-12 h-12 font-medium text-sm flex items-center justify-center",
+                    row: "flex w-full mt-1",
+                    cell: "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 w-12 h-12",
+                    day: "h-12 w-12 p-0 font-medium rounded-xl transition-all duration-200 hover:bg-sage-50 flex items-center justify-center",
+                    day_selected: "bg-gradient-to-br from-sage-500 to-sage-600 text-white hover:from-sage-600 hover:to-sage-700 shadow-md transform scale-105",
+                    day_today: "bg-sage-100 text-sage-900 font-bold",
+                    day_outside: "text-gray-300 opacity-50",
+                    day_disabled: "text-gray-300 opacity-50 cursor-not-allowed hover:bg-transparent",
+                    day_range_middle: "aria-selected:bg-sage-100 aria-selected:text-sage-900",
+                    day_hidden: "invisible",
+                  }}
+                />
               </div>
-            )}
 
-          {selectedDate && (
-            <div className="mt-6 p-4 bg-sage-50 rounded-lg">
-              <h4 className="font-medium text-gray-900 mb-2">Time Zone</h4>
-              <p className="text-sm text-gray-600">
-                All times shown in Philippines time (Asia/Manila)
-              </p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+              {/* Enhanced Legend */}
+              <div className="bg-gradient-to-r from-sage-50 to-emerald-50 rounded-xl p-4">
+                <h4 className="font-semibold text-gray-900 mb-3 text-sm">Legend</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-gradient-to-br from-sage-500 to-sage-600 rounded-lg shadow-sm"></div>
+                    <span className="text-gray-700 font-medium">Selected</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-sage-100 rounded-lg"></div>
+                    <span className="text-gray-700">Today</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-gray-200 rounded-lg"></div>
+                    <span className="text-gray-500">Unavailable</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Enhanced Time Slots */}
+        <div className="lg:col-span-1">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-sage-25">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                <div className="w-10 h-10 bg-sage-100 rounded-xl flex items-center justify-center mr-3">
+                  <Clock className="h-5 w-5 text-sage-600" />
+                </div>
+                Time Slots
+              </CardTitle>
+              {selectedDate && (
+                <div className="ml-13 bg-white rounded-xl p-3 border border-sage-100">
+                  <p className="text-sm font-medium text-gray-900">
+                    {selectedDate.toLocaleDateString("en-US", {
+                      weekday: "long",
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </p>
+                  <div className="flex items-center mt-1 text-xs text-gray-600">
+                    <MapPin className="h-3 w-3 mr-1" />
+                    Philippines Time (GMT+8)
+                  </div>
+                </div>
+              )}
+            </CardHeader>
+            <CardContent>
+              {!selectedDate ? (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-sage-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Clock className="h-8 w-8 text-sage-400" />
+                  </div>
+                  <p className="text-gray-500 font-medium">Select a date first</p>
+                  <p className="text-gray-400 text-sm mt-1">Available times will appear here</p>
+                </div>
+              ) : loading ? (
+                <div className="text-center py-12">
+                  <div className="relative w-12 h-12 mx-auto mb-4">
+                    <div className="absolute inset-0 rounded-full border-4 border-sage-100"></div>
+                    <div className="absolute inset-0 rounded-full border-4 border-sage-500 border-t-transparent animate-spin"></div>
+                  </div>
+                  <p className="text-gray-600 font-medium">Loading times...</p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {/* Morning Slots */}
+                  {getAvailableSlotsForPeriod('morning').length > 0 && (
+                    <TimeSlotGroup
+                      title="Morning"
+                      subtitle="9:00 AM - 12:00 PM"
+                      slots={timeSlots.morning}
+                      availableSlots={availableSlots}
+                      selectedTime={selectedTime}
+                      onTimeSelect={onTimeSelect}
+                      isTimeAvailable={isTimeAvailable}
+                    />
+                  )}
+
+                  {/* Afternoon Slots */}
+                  {getAvailableSlotsForPeriod('afternoon').length > 0 && (
+                    <TimeSlotGroup
+                      title="Afternoon"
+                      subtitle="1:00 PM - 5:00 PM"
+                      slots={timeSlots.afternoon}
+                      availableSlots={availableSlots}
+                      selectedTime={selectedTime}
+                      onTimeSelect={onTimeSelect}
+                      isTimeAvailable={isTimeAvailable}
+                    />
+                  )}
+
+                  {/* No Available Times */}
+                  {availableSlots.length === 0 && !error && (
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <Clock className="h-8 w-8 text-red-400" />
+                      </div>
+                      <p className="text-red-600 font-medium">No available times</p>
+                      <p className="text-red-500 text-sm mt-1">Please try another date</p>
+                    </div>
+                  )}
+
+                  {/* Error State */}
+                  {error && (
+                    <div className="text-center py-8 bg-red-50 rounded-xl border border-red-100">
+                      <p className="text-red-600 font-medium">Unable to load times</p>
+                      <p className="text-red-500 text-sm mt-1">Please try again</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface TimeSlotGroupProps {
+  title: string;
+  subtitle: string;
+  slots: string[];
+  availableSlots: string[];
+  selectedTime: string | null;
+  onTimeSelect: (time: string) => void;
+  isTimeAvailable: (time: string) => boolean;
+}
+
+function TimeSlotGroup({
+  title,
+  subtitle,
+  slots,
+  selectedTime,
+  onTimeSelect,
+  isTimeAvailable,
+}: TimeSlotGroupProps) {
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <div>
+          <h4 className="font-semibold text-gray-900 text-sm">{title}</h4>
+          <p className="text-xs text-gray-500">{subtitle}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-2">
+        {slots.map((time: string) => {
+          const isAvailable = isTimeAvailable(time);
+          const isSelected = selectedTime === time;
+
+          if (!isAvailable) return null;
+
+          return (
+            <Button
+              key={time}
+              variant={isSelected ? "default" : "outline"}
+              className={`h-11 text-sm font-medium transition-all duration-200 justify-between ${
+                isSelected
+                  ? "bg-gradient-to-r from-sage-500 to-sage-600 hover:from-sage-600 hover:to-sage-700 text-white shadow-md border-0"
+                  : "border-sage-200 hover:bg-sage-50 hover:border-sage-300 hover:shadow-sm bg-white"
+              }`}
+              onClick={() => onTimeSelect(time)}
+            >
+              <span>{time}</span>
+              {isSelected && <CheckCircle className="h-4 w-4" />}
+            </Button>
+          );
+        })}
+      </div>
     </div>
   );
 }
