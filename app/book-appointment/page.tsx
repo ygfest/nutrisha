@@ -4,7 +4,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { BookingPageClient } from "./booking-page-client";
+import { BookingFlow } from "@/components/features/booking/booking-flow";
 import { BookingPageSkeleton } from "@/components/shared/booking-page-skeleton";
 import { getAppointmentTypes } from "@/actions/booking-data";
 
@@ -27,4 +27,3 @@ export default async function BookAppointmentPage() {
     </div>
   );
 }
-
