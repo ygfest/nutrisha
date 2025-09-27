@@ -33,7 +33,7 @@ export default function MobileNav() {
           ></div>
 
           <div className="fixed inset-x-0 top-20 z-30 bg-white/95 backdrop-blur-md border-t border-sage-100/70 shadow-lg">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 animate-slide-up">
               <nav className="flex flex-col space-y-4">
                 <a
                   href="#home"
