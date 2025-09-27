@@ -23,7 +23,7 @@ export function BookingHeader({ steps, currentStepIndex, progress, onStepClick }
               Schedule your personalized session with Krisha Nobora, RND
             </p>
           </div>
-          <Badge variant="outline" className="text-sage-600 border-sage-200">
+          <Badge variant="outline" className="text-sage-600 border-sage-200 white-space-nowrap">
             Step {currentStepIndex + 1} of {steps.length}
           </Badge>
         </div>
