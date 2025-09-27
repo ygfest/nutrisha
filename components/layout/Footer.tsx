@@ -21,7 +21,7 @@ export default function Footer() {
             Empowering healthier lives through evidence-based nutrition,
             personalized guidance, and compassionate care.
           </p>
-          <div className="flex justify-center space-x-8 mb-8">
+          <div className="flex flex-wrap justify-center gap-6 mb-8 text-sm sm:text-base">
             <Link
               href="/privacy-policy"
               className="relative group text-slate-400 hover:text-white font-light tracking-tight transition-all duration-300"
@@ -45,7 +45,7 @@ export default function Footer() {
             </Link>
           </div>
           <p className="text-slate-500 text-sm font-light tracking-wide">
-            © 2025 Krisha Nobora, RND. All rights reserved.
+            &copy; 2025 Krisha Nobora, RND. All rights reserved.
           </p>
         </div>
       </div>
