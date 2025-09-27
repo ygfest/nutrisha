@@ -17,7 +17,7 @@ export function PageHero({ title, description, eyebrow, children }: PageHeroProp
       <div className="relative mx-auto max-w-5xl px-4 pb-20 pt-24 sm:px-6 lg:px-8 lg:pb-28 lg:pt-32">
         <div className="max-w-3xl">
           {eyebrow ? (
-            <span className="inline-flex items-center rounded-full border border-sage-200 bg-white/60 px-6 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-sage-700 backdrop-blur-md">
+            <span className="mb-8 bg-white/60 backdrop-blur-md border border-slate-200/50 hover:bg-white/80 hover:border-slate-300/60 shadow-lg shadow-slate-500/10 px-6 py-2.5 text-xs font-medium uppercase tracking-[0.5px] transition-all duration-300 text-sage-700 rounded-full inline-block">
               {eyebrow}
             </span>
           ) : null}
